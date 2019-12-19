@@ -1,0 +1,7 @@
+DROP DATABASE IF EXISTS cartestdb;
+CREATE DATABASE cartestdb;
+USE cartestdb;
+CREATE TABLE Car (Car_id INT (11) NOT NULL AUTO_INCREMENT PRIMARY KEY, color VARCHAR (100));
+CREATE TABLE Person (Person_id INT (11) NOT NULL AUTO_INCREMENT PRIMARY KEY, name VARCHAR (100));
+CREATE TABLE Ownership (owners INT (11), ownedCars INT (11));
+ALTER TABLE Ownership ADD FOREIGN KEY (owners) REFERENCES Person (Person_id), ADD FOREIGN KEY (ownedCars) REFERENCES Car (Car_id);
