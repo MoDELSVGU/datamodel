@@ -60,5 +60,11 @@ public class Attribute {
     public Set<Constraint> getConstraints() {
         return constraints;
     }
+    
+    @Override
+    public String toString() {
+        return "Name: " + name + "\n"
+                + "Type: " + type + "\n";
+    }
 
 }

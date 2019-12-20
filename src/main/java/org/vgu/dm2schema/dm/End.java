@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-@author: ngpbh
+@author: ngpbh, thian
 ***************************************************************************/
 
 package org.vgu.dm2schema.dm;
@@ -89,4 +89,12 @@ public class End {
         return false;
     }
 
+    @Override
+    public String toString() {
+        return "name : " + this.name + "\n" 
+                + "targetClass : " + this.targetClazz + "\n"
+                + "currentClass : " + this.currentClazz + "\n"
+                + "opp : " + this.opp + "\n"
+                + "mult : " + this.mult + ";\n";
+    }
 }

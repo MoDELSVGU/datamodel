@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -56,8 +57,8 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 public class DM2Schema {
 
     public static void main(String[] args) throws Exception {
-        File dataModelFile = new File("src/main/resources/genSQL/university_test.json");
-        File SQLschemaFile = new File("src/main/resources/genSQL/university_test.sql");
+        File dataModelFile = new File("genSQL/university_test.json");
+        File SQLschemaFile = new File("genSQL/university_test.sql");
         String databaseName = "unidb";
 
         DataModel dataModel = new DataModel(new JSONParser()
@@ -262,9 +263,11 @@ public class DM2Schema {
     }
 
     private static List<Statement> createTablesStatements(
-        Set<Entity> entities) {
+        Map<String, Entity> entities) {
         List<Statement> tables = new ArrayList<Statement>();
-        for (Entity entity : entities) {
+        for (Map.Entry<String, Entity> entry : entities.entrySet()) {
+            Entity entity = entry.getValue();
+
             CreateTable createTable = new CreateTable();
             tables.add(createTable);
             // Set table name

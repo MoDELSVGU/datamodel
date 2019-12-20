@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-@author: ngpbh
+@author: ngpbh, thian
 ***************************************************************************/
 
 package org.vgu.dm2schema.dm;
@@ -99,4 +99,11 @@ public class Association extends Pair<End, End> {
             && this.getRight().getMult() != Multiplicity.MANY;
     }
 
+//    thian input this
+    @Override
+    public String toString() {
+        return this.leftEntityName + " " + super.getLeft().getMult()
+                + " <--> " + super.getRight().getMult() + " "
+                + this.rightEntityName + "\n";
+    }
 }

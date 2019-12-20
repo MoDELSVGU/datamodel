@@ -64,4 +64,8 @@ public class Entity {
         return ends;
     }
 
+    @Override
+    public String toString() {
+        return "Class : " + clazz + "\n";
+    }
 }
