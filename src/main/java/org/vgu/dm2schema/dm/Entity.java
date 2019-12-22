@@ -20,6 +20,7 @@ package org.vgu.dm2schema.dm;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.json.simple.JSONArray;
@@ -39,16 +40,20 @@ public class Entity {
         this.attributes = new HashSet<Attribute>();
         @SuppressWarnings("unchecked")
         List<JSONObject> attributes = (JSONArray) entity.get("attributes");
-        for (JSONObject attribute : attributes) {
-            this.attributes.add(new Attribute(attribute));
+        if(Objects.nonNull(attributes)) {
+            for (JSONObject attribute : attributes) {
+                this.attributes.add(new Attribute(attribute));
+            }
         }
         this.ends = new HashSet<End>();
         @SuppressWarnings("unchecked")
         List<JSONObject> ends = (JSONArray) entity.get("ends");
-        for (JSONObject obj : ends) {
-            End end = new End(obj);
-            end.setCurrentClass(this.clazz);
-            this.ends.add(end);
+        if(Objects.nonNull(ends)) {
+            for (JSONObject obj : ends) {
+                End end = new End(obj);
+                end.setCurrentClass(this.clazz);
+                this.ends.add(end);
+            }
         }
     }
 
