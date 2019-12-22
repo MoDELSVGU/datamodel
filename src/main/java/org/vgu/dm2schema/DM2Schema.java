@@ -57,8 +57,8 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 public class DM2Schema {
 
     public static void main(String[] args) throws Exception {
-        File dataModelFile = new File("genSQL/university_test.json");
-        File SQLschemaFile = new File("genSQL/university_test.sql");
+        File dataModelFile = new File("src/main/resources/genSQL/university_test.json");
+        File SQLschemaFile = new File("src/main/resources/genSQL/university_test.sql");
         String databaseName = "unidb";
 
         DataModel dataModel = new DataModel(new JSONParser()

@@ -16,30 +16,9 @@ limitations under the License.
 @author: ngpbh
 ***************************************************************************/
 
+
 package org.vgu.dm2schema.dm;
 
-public enum Multiplicity {
-    ONE("1"), MANY("*");
-
-    private String representation;
-
-    Multiplicity(String representation) {
-        this.representation = representation;
-    }
-
-    public String getRepresentation() {
-        return representation;
-    }
-
-    @Override
-    public String toString() {
-        return this.getRepresentation();
-    }
-
-    public static Multiplicity getEnum(String value) {
-        for (Multiplicity v : values())
-            if (v.getRepresentation().equalsIgnoreCase(value))
-                return v;
-        throw new IllegalArgumentException();
-    }
+public enum AssociationType {
+    MANY_TO_MANY, MANY_TO_ONE, ONE_TO_ONE;
 }

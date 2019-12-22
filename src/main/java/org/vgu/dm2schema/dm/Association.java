@@ -99,7 +99,6 @@ public class Association extends Pair<End, End> {
             && this.getRight().getMult() != Multiplicity.MANY;
     }
 
-//    thian input this
     @Override
     public String toString() {
         return this.leftEntityName + " " + super.getLeft().getMult()

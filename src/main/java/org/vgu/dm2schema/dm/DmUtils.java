@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.vgu.dm2schema.dm;
 
+import java.util.Optional;
 import java.util.Set;
 
 public class DmUtils {
@@ -44,149 +45,84 @@ public class DmUtils {
 
     public static String getAssociationOppClassName(DataModel dm,
             String className, String endName) {
-
         End end = getEnd(dm, className, endName);
-
-        try {
-            return end.getTargetClass();
-
-        } catch (Exception e) {
-//            e.printStackTrace();
-
-            return null;
-        }
+        return Optional.ofNullable(end).map(End::getTargetClass).orElse(null);
     }
 
     public static String getOppositeAssociationName(DataModel dm,
             String className, String endName) {
         End end = getEnd(dm, className, endName);
-
-        try {
-
-            return end.getOpp();
-
-        } catch (Exception e) {
-
-//            e.printStackTrace();
-            return null;
-        }
+        return Optional.ofNullable(end).map(End::getOpp).orElse(null);
     }
 
     public static boolean isAssociationEndOfClass(DataModel dm,
             String className, String endName) {
-
-        try {
-            End end = getEnd(dm, className, endName);
-
-            return end.getName().equals(endName);
-
-        } catch (Exception e) {
-
-//            e.printStackTrace();
-            return false;
-        }
+        End end = getEnd(dm, className, endName);
+        return Optional.ofNullable(end).map(End::getName).map(v -> v.equals(endName)).orElse(false);
     }
 
     public static boolean isClass(DataModel dm, String className) {
-        return dm.getEntities().get(className) != null;
+        return dm.getEntities().containsKey(className);
     }
 
     public static boolean isPropertyOfClass(DataModel dm,
             String className, String attName) {
-
-        try {
-            Attribute att = getAttribute(dm, className, attName);
-
-            return att.getName().equals(attName);
-        } catch (Exception e) {
-//            e.printStackTrace();
-            return false;
-        }
+        Attribute att = getAttribute(dm, className, attName);
+        return Optional.ofNullable(att).map(Attribute::getName).map(v -> v.equals(attName)).orElse(false);
     }
 
     public static String getAttributeType(DataModel dm,
             String className, String attName) {
         Attribute att = getAttribute(dm, className, attName);
-
-        try {
-            return att.getType();
-
-        } catch (Exception e) {
-
-//            e.printStackTrace();
-            return null;
-        }
+        return Optional.ofNullable(att).map(Attribute::getType).orElse(null);
     }
 
     public static boolean isAssocM2M(DataModel dm, String className,
             String endName) {
         return getAssocRelationship(dm, className, endName)
-                .equals("M2M");
-    }
-
-    public static boolean isAssocO2M(DataModel dm, String className,
-            String endName) {
-        return getAssocRelationship(dm, className, endName)
-                .equals("O2M");
+                == AssociationType.MANY_TO_MANY;
     }
 
     public static boolean isAssocM2O(DataModel dm, String className,
             String endName) {
-        return isAssocO2M(dm, className, endName);
+        return getAssocRelationship(dm, className, endName)
+                == AssociationType.MANY_TO_ONE;
     }
 
     public static boolean isAssocO2O(DataModel dm, String className,
             String endName) {
         return getAssocRelationship(dm, className, endName)
-                .equals("O2O");
+                == AssociationType.ONE_TO_ONE;
     }
 
     public static boolean isEndMultMany(DataModel dm, String className,
             String endName) {
         End end = getEnd(dm, className, endName);
-
-        try {
-
-            return end.getMult().getValue().equals("*");
-        } catch (Exception e) {
-
-//            e.printStackTrace();
-            return false;
-        }
+        return Optional.ofNullable(end).map(End::getMult).map(v -> v == Multiplicity.MANY).orElse(false);
     }
 
     public static boolean isEndMultOne(DataModel dm, String className,
             String endName) {
-
         End end = getEnd(dm, className, endName);
-
-        try {
-
-            return end.getMult().getValue().equals("1");
-
-        } catch (Exception e) {
-
-//            e.printStackTrace();
-            return false;
-        }
-
+        return Optional.ofNullable(end).map(End::getMult).map(v -> v == Multiplicity.ONE).orElse(false);
     }
 
-    private static String getAssocRelationship(DataModel dm,
+    private static AssociationType getAssocRelationship(DataModel dm,
             String className, String endName) {
 
         try {
             End end = getEnd(dm, className, endName);
-            String rightMult = end.getMult().getValue();
+            Multiplicity rightMult = end.getMult();
 
             String targetClass = getAssociationOppClassName(dm,
                     className, endName);
             Entity entity = dm.getEntities().get(targetClass);
-            String leftMult = "";
+            Multiplicity leftMult = null;
 
             for (End oppositeEnd : entity.getEnds()) {
                 if (oppositeEnd.getTargetClass().equals(className)) {
-                    leftMult = oppositeEnd.getMult().getValue();
+                    leftMult = oppositeEnd.getMult();
+                    break;
                 }
             }
 
@@ -198,18 +134,16 @@ public class DmUtils {
         }
     }
 
-    private static String getRelationshipType(String leftMult,
-            String rightMult) {
-        boolean isLeftMultOne = leftMult.equals("1");
-        boolean isRightMultOne = rightMult.equals("1");
+    private static AssociationType getRelationshipType(Multiplicity leftMult,
+            Multiplicity rightMult) {
+        boolean isLeftMultOne = leftMult == Multiplicity.ONE;
+        boolean isRightMultOne = rightMult == Multiplicity.ONE;
 
-        if (isLeftMultOne ^ isRightMultOne) {
-            return "O2M";
-        } else if (isLeftMultOne && isRightMultOne) {
-            return "O2O";
-        } else {
-            return "M2M";
-        }
+        if (isLeftMultOne ^ isRightMultOne)
+            return AssociationType.MANY_TO_ONE;
+        if (isLeftMultOne && isRightMultOne)
+            return AssociationType.ONE_TO_ONE;
+        return AssociationType.MANY_TO_MANY;
     }
 
     private static End getEnd(DataModel dm, String className,
