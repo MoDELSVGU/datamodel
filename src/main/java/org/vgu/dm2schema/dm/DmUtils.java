@@ -43,13 +43,13 @@ public class DmUtils {
         return null;
     }
 
-    public static String getAssociationOppClassName(DataModel dm,
+    public static String getAssociationEndTargetClassName(DataModel dm,
             String className, String endName) {
         End end = getEnd(dm, className, endName);
         return Optional.ofNullable(end).map(End::getTargetClass).orElse(null);
     }
 
-    public static String getOppositeAssociationName(DataModel dm,
+    public static String getAssociationEndSourceClassName(DataModel dm,
             String className, String endName) {
         End end = getEnd(dm, className, endName);
         return Optional.ofNullable(end).map(End::getOpp).orElse(null);
@@ -114,7 +114,7 @@ public class DmUtils {
             End end = getEnd(dm, className, endName);
             Multiplicity rightMult = end.getMult();
 
-            String targetClass = getAssociationOppClassName(dm,
+            String targetClass = getAssociationEndTargetClassName(dm,
                     className, endName);
             Entity entity = dm.getEntities().get(targetClass);
             Multiplicity leftMult = null;
@@ -173,6 +173,12 @@ public class DmUtils {
         }
 
         return null;
+    }
+
+    public static boolean isSuperClassOf(DataModel dm, String typeToCheck,
+        String referredType) {
+        // TODO Will be consider later when we have generalization
+        return false;
     }
 
 }

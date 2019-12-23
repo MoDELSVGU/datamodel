@@ -40,12 +40,12 @@ public class DmUtilsTest {
         System.out.println(assocName);
 
         // getAssociationOppClassName();
-        String assocOppClassName = DmUtils.getAssociationOppClassName(
+        String assocOppClassName = DmUtils.getAssociationEndTargetClassName(
                 dataModel, "University", "programs");
         System.out.println(assocOppClassName);
 
         // getAssociationOppClassName();
-        String oppAssocName = DmUtils.getOppositeAssociationName(
+        String oppAssocName = DmUtils.getAssociationEndSourceClassName(
                 dataModel, "University", "programs");
         System.out.println(oppAssocName);
 
