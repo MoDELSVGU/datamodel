@@ -57,9 +57,9 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 public class DM2Schema {
 
     public static void main(String[] args) throws Exception {
-        File dataModelFile = new File("src/main/resources/genSQL/car.json");
-        File SQLschemaFile = new File("src/main/resources/genSQL/car.sql");
-        String databaseName = "cardb";
+        File dataModelFile = new File("src/main/resources/genSQL/uni_pof_dm.json");
+        File SQLschemaFile = new File("src/main/resources/genSQL/pof.sql");
+        String databaseName = "unipof";
 
         DataModel dataModel = new DataModel(new JSONParser()
             .parse(new FileReader(dataModelFile.getAbsolutePath())));
