@@ -78,11 +78,18 @@
          },
          {
             "name":"name",
-            "type":"String"
+            "type":"String",
+            "constraints":[
+               "unique",
+               "notnull"
+            ]
          },
          {
             "name":"doe",
-            "type":"Date"
+            "type":"Date",
+            "constraints":[
+               "notnull"
+            ]
          }
       ],
       "ends":[
@@ -143,7 +150,10 @@
          },
          {
             "name":"name",
-            "type":"String"
+            "type":"String",
+            "constraints":[
+               "notnull"
+            ]
          }
       ],
       "ends":[
@@ -166,7 +176,10 @@
       "attributes":[
          {
             "name":"status",
-            "type":"String"
+            "type":"String",
+            "constraints":[
+               "notnull"
+            ]
          }
       ],
       "ends":[
@@ -267,10 +280,10 @@
             "mult":"*"
          },
          {
-            "name":"exam",
+            "name":"exams",
             "target":"Exam",
-            "opp":"module_periods",
-            "mult":"1"
+            "opp":"module_period",
+            "mult":"*"
          }
       ]
    },
@@ -314,10 +327,10 @@
             "mult":"*"
          },
          {
-            "name":"module_periods",
+            "name":"module_period",
             "target":"Module_Period",
-            "opp":"exam",
-            "mult":"*"
+            "opp":"exams",
+            "mult":"1"
          }
       ]
    },
@@ -325,16 +338,18 @@
       "class":"Registration_Exam",
       "attributes":[
          {
-            "name":"date",
-            "type":"Date"
-         },
-         {
-            "name":"time",
-            "type":"Time"
+            "name":"datetime",
+            "type":"Datetime",
+            "constraints":[
+               "notnull"
+            ]
          },
          {
             "name":"status",
-            "type":"Boolean"
+            "type":"String",
+            "constraints":[
+               "notnull"
+            ]
          }
       ],
       "ends":[
@@ -351,5 +366,33 @@
             "mult":"1"
          }
       ]
-   }
+   },
+	{
+	  "invariants": [
+		{
+		  "label": "valid_student_age_at_least_18",
+		  "ocl": "Student.allInstances()->collect(s|s.dob)->notEmpty()"
+		},
+		{
+		  "label": "valid_program_doe_before_today",
+		  "ocl": "Program.allInstances()->forAll(p|p.doe < @SQL(CURDATE()))"
+		},
+		{
+		  "label": "valid_enrollment_starts_before_ends",
+		  "ocl": "Enrollment.allInstances()->forAll(e|e.ends.oclIsUndefined() or e.ends > e.starts)"
+		},
+		{
+		  "label": "valid_enrollment_starts_after_program_doe",
+		  "ocl": "Enrollment.allInstances()->forAll(e|e.starts < e.program.doe)"
+		},
+		{
+		  "label": "valid_module_name_unique_by_program",
+		  "ocl": "Program.allInstances()->forAll(p|p.modules->collect(m|m.name)->isUnique())"
+		},
+		{
+		  "label": "valid_record_no_duplicate_student_moduleperiod",
+		  "ocl": "Record.allInstances()->forAll(r1|Record.allInstances()->forAll(r2|r2 = r1 or r2.module_period <> r1.module_period))"
+		}
+	  ]
+	}
 ]
