@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -64,6 +65,10 @@ public class DataModel {
 
     public Set<Invariants> getInvariants() {
         return invariants;
+    }
+    
+    public List<Invariant> getInvariantsFlatten() {
+        return invariants.stream().flatMap(ArrayList::stream).collect(Collectors.toList());
     }
 
     public Set<Association> getAssociations() {
