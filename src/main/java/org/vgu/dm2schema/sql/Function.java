@@ -72,4 +72,8 @@ public class Function implements MultiPartName {
     public void setStatement(CompoundStatement statement) {
         this.statement = statement;
     }
+    
+    public Function(String name) {
+        this.name = name;
+    }
 }
