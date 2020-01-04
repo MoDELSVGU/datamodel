@@ -18,22 +18,31 @@ limitations under the License.
 
 package org.vgu.dm2schema.sql;
 
-import net.sf.jsqlparser.schema.Database;
+public class CreateFunction {
 
-public class CreateDatabase {
-    private Database database;
+    protected Function function;
+    protected String delimiter;
+
+    public Function getFunction() {
+        return function;
+    }
+
+    public void setFunction(Function function) {
+        this.function = function;
+    }
 
     @Override
     public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_DATABASE,
-            database.getDatabaseName());
+        function.getStatement().setDelimiter(delimiter);
+        return String.format(SQLSchemaTemplate.CREATE_FUNCTION, delimiter,
+            function.getName(), function.getStatement());
     }
 
-    public Database getDatabase() {
-        return database;
+    public String getDelimiter() {
+        return delimiter;
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
     }
 }

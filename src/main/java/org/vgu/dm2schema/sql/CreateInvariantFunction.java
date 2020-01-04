@@ -18,22 +18,22 @@ limitations under the License.
 
 package org.vgu.dm2schema.sql;
 
-import net.sf.jsqlparser.schema.Database;
-
-public class CreateDatabase {
-    private Database database;
+public class CreateInvariantFunction extends CreateFunction {
+    private String sqlInvariant;
 
     @Override
     public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_DATABASE,
-            database.getDatabaseName());
+        return String.format(
+            SQLSchemaTemplate.CREATE_INVARIANT_FUNCTION, delimiter,
+            function.getName(), sqlInvariant);
     }
 
-    public Database getDatabase() {
-        return database;
+    public String getSqlInvariant() {
+        return sqlInvariant;
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
+    public void setSqlInvariant(String sqlInvariant) {
+        this.sqlInvariant = sqlInvariant;
     }
+
 }

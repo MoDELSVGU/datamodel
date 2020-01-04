@@ -19,14 +19,30 @@ limitations under the License.
 package org.vgu.dm2schema.sql;
 
 import net.sf.jsqlparser.schema.Database;
+import net.sf.jsqlparser.schema.MultiPartName;
 
-public class CreateDatabase {
+public class Function implements MultiPartName {
+
     private Database database;
+    private String name;
+    private CompoundStatement statement;
 
     @Override
-    public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_DATABASE,
-            database.getDatabaseName());
+    public String getFullyQualifiedName() {
+        String fqn = "";
+
+        if (database != null) {
+            fqn += database.getFullyQualifiedName();
+        }
+        if (!fqn.isEmpty()) {
+            fqn += ".";
+        }
+
+        if (name != null) {
+            fqn += name;
+        }
+
+        return fqn;
     }
 
     public Database getDatabase() {
@@ -35,5 +51,25 @@ public class CreateDatabase {
 
     public void setDatabase(Database database) {
         this.database = database;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    public String call() {
+        return this.getFullyQualifiedName().concat("()");
+    }
+
+    public CompoundStatement getStatement() {
+        return statement;
+    }
+
+    public void setStatement(CompoundStatement statement) {
+        this.statement = statement;
     }
 }

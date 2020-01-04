@@ -18,36 +18,24 @@ limitations under the License.
 
 package org.vgu.dm2schema.sql;
 
-public class InvariantFunction {
-    public static final String TEMPLATE = "DROP FUNCTION IF EXISTS %1$s;\r\n"
-        + "DELIMITER //\r\n" + "CREATE FUNCTION %1$s ()\r\n"
-        + "RETURNS INT DETERMINISTIC\r\n" + "BEGIN\r\n"
-        + "DECLARE result INT DEFAULT 0;\r\n"
-        + "SELECT res INTO result FROM (%2$s) AS TEMP_result;\r\n"
-        + "RETURN (result);\r\n" + "END //\r\n" + "DELIMITER ";
+public class CreateInvariantTrigger extends CreateTrigger {
+    private Function function;
 
-    private String name;
-    private String sqlInvariant;
-
-    public String getName() {
-        return name;
+    public Function getFunction() {
+        return function;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFunction(Function function) {
+        this.function = function;
     }
 
     @Override
     public String toString() {
-        return String.format(TEMPLATE, name, sqlInvariant);
-    }
-
-    public String getSqlInvariant() {
-        return sqlInvariant;
-    }
-
-    public void setSqlInvariant(String sqlInvariant) {
-        this.sqlInvariant = sqlInvariant;
+        return String.format(SQLSchemaTemplate.CREATE_INVARIANT_TRIGGER,
+            delimiter,
+            trigger.getName(), trigger.getTriggerTime(),
+            trigger.getTriggerEvent(), trigger.getTable().getName(),
+            function.call());
     }
 
 }

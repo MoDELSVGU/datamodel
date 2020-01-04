@@ -16,24 +16,11 @@ limitations under the License.
 @author: ngpbh
 ***************************************************************************/
 
+
 package org.vgu.dm2schema.sql;
 
-import net.sf.jsqlparser.schema.Database;
-
-public class CreateDatabase {
-    private Database database;
-
-    @Override
-    public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_DATABASE,
-            database.getDatabaseName());
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
+public enum TriggerAction {
+    INSERT,
+    UDPATE,
+    DELETE
 }

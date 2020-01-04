@@ -18,22 +18,34 @@ limitations under the License.
 
 package org.vgu.dm2schema.sql;
 
-import net.sf.jsqlparser.schema.Database;
+public class CreateTrigger {
+    protected Trigger trigger;
+    protected String delimiter;
 
-public class CreateDatabase {
-    private Database database;
+    public String getDelimiter() {
+        return delimiter;
+    }
+
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
+    public Trigger getTrigger() {
+        return trigger;
+    }
+
+    public void setTrigger(Trigger trigger) {
+        this.trigger = trigger;
+    }
 
     @Override
     public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_DATABASE,
-            database.getDatabaseName());
+        trigger.getStatement().setDelimiter(delimiter);
+        return String.format(SQLSchemaTemplate.CREATE_TRIGGER,
+            delimiter,
+            trigger.getName(), trigger.getTriggerTime(),
+            trigger.getTriggerEvent(), trigger.getTable().getName(),
+            trigger.getStatement());
     }
 
-    public Database getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
 }

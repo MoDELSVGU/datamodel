@@ -18,22 +18,33 @@ limitations under the License.
 
 package org.vgu.dm2schema.sql;
 
-import net.sf.jsqlparser.schema.Database;
+/**
+ * The Class CompoundStatement.
+ * https://dev.mysql.com/doc/refman/8.0/en/sql-compound-statements.html
+ */
+public class CompoundStatement {
+    private String statement;
+    private String delimiter;
 
-public class CreateDatabase {
-    private Database database;
+    public String getStatement() {
+        return statement;
+    }
+
+    public void setStatement(String statement) {
+        this.statement = statement;
+    }
 
     @Override
     public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_DATABASE,
-            database.getDatabaseName());
+        return "BEGIN \r\n" + statement + "END " + delimiter;
     }
 
-    public Database getDatabase() {
-        return database;
+    public String getDelimiter() {
+        return delimiter;
     }
 
-    public void setDatabase(Database database) {
-        this.database = database;
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
     }
+
 }
