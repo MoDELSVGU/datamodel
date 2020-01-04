@@ -43,7 +43,7 @@ public class CreateTrigger {
         trigger.getStatement().setDelimiter(delimiter);
         return String.format(SQLSchemaTemplate.CREATE_TRIGGER,
             delimiter,
-            trigger.getName(), trigger.getTriggerTime(),
+            trigger.getTriggerName(), trigger.getTriggerTime(),
             trigger.getTriggerEvent(), trigger.getTable().getName(),
             trigger.getStatement());
     }

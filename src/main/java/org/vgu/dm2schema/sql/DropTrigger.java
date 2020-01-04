@@ -16,7 +16,6 @@ limitations under the License.
 @author: ngpbh
 ***************************************************************************/
 
-
 package org.vgu.dm2schema.sql;
 
 import java.util.List;
@@ -28,12 +27,12 @@ public class DropTrigger {
     private Trigger trigger;
     private List<String> parameters;
     private boolean ifExists = false;
-    
+
     public DropTrigger() {
         this.setType("TRIGGER");
     }
 
-    public Trigger getName() {
+    public Trigger getTrigger() {
         return trigger;
     }
 
@@ -45,7 +44,7 @@ public class DropTrigger {
         return type;
     }
 
-    public void setName(Trigger string) {
+    public void setTrigger(Trigger string) {
         trigger = string;
     }
 
@@ -67,8 +66,8 @@ public class DropTrigger {
 
     @Override
     public String toString() {
-        String sql = "DROP " + type + " "
-                + (ifExists ? "IF EXISTS " : "") + trigger.getName();
+        String sql = "DROP " + type + " " + (ifExists ? "IF EXISTS " : "")
+            + trigger.getName();
 
         if (parameters != null && !parameters.isEmpty()) {
             sql += " " + PlainSelect.getStringList(parameters);

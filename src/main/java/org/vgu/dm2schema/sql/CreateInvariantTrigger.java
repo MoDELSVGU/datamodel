@@ -33,7 +33,7 @@ public class CreateInvariantTrigger extends CreateTrigger {
     public String toString() {
         return String.format(SQLSchemaTemplate.CREATE_INVARIANT_TRIGGER,
             delimiter,
-            trigger.getName(), trigger.getTriggerTime(),
+            trigger.getTriggerName(), trigger.getTriggerTime(),
             trigger.getTriggerEvent(), trigger.getTable().getName(),
             function.call());
     }

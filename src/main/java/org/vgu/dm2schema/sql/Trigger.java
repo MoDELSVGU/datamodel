@@ -83,5 +83,13 @@ public class Trigger {
     public String getTriggerEvent() {
         return getAction().toString().toUpperCase();
     }
+    
+    public Trigger(String name) {
+        this.name = name;
+    }
+    
+    public String getTriggerName() {
+        return this.name.concat(getTriggerTime()).concat(getTriggerEvent());
+    }
 
 }
