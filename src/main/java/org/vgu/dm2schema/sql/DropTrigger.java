@@ -67,7 +67,7 @@ public class DropTrigger {
     @Override
     public String toString() {
         String sql = "DROP " + type + " " + (ifExists ? "IF EXISTS " : "")
-            + trigger.getName();
+            + trigger.getTriggerName();
 
         if (parameters != null && !parameters.isEmpty()) {
             sql += " " + PlainSelect.getStringList(parameters);
