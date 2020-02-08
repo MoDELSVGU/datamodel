@@ -30,6 +30,10 @@ public class Attribute {
     private String name;
     private String type;
     private Set<Constraint> constraints;
+    
+    public Attribute() {
+        constraints = new HashSet<Constraint>();
+    }
 
     public Attribute(Object object) throws Exception {
         if (!(object instanceof JSONObject))
@@ -66,5 +70,19 @@ public class Attribute {
         return "Name: " + name + "\n"
                 + "Type: " + type + "\n";
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setConstraints(Set<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+    
+    
 
 }

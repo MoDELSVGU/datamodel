@@ -34,6 +34,11 @@ public class DataModel {
     private Map<String, Entity> entities;
     private Set<Invariants> invariants;
     private Set<Association> associations;
+    
+    public DataModel() {
+        entities = new HashMap<String, Entity>();
+        invariants = new HashSet<Invariants>();
+    };
 
     public DataModel(Object object) throws Exception {
 
@@ -56,7 +61,7 @@ public class DataModel {
             }
         }
 
-        collectAssociations(this.entities);
+        formAssociations(this.entities);
     }
 
     public Map<String, Entity> getEntities() {
@@ -75,7 +80,19 @@ public class DataModel {
         return associations;
     }
 
-    private void collectAssociations(Map<String, Entity> entities) {
+    public void formAssociations(Map<String, Entity> entities) {
+        List<End> ends = new ArrayList<>();
+
+        for (Map.Entry<String, Entity> entry : entities.entrySet()) {
+            for (End end : entry.getValue().getEnds()) {
+                ends.add(end);
+            }
+        }
+
+        this.associations = filterDuplicatedAssociation(ends);
+    }
+    
+    public void formAssociations() {
         List<End> ends = new ArrayList<>();
 
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
@@ -110,6 +127,18 @@ public class DataModel {
         }
 
         return pairEnds;
+    }
+
+    public void setEntities(Map<String, Entity> entities) {
+        this.entities = entities;
+    }
+
+    public void setInvariants(Set<Invariants> invariants) {
+        this.invariants = invariants;
+    }
+
+    public void setAssociations(Set<Association> associations) {
+        this.associations = associations;
     }
     
 }
