@@ -37,6 +37,9 @@ public class End {
         this.mult = Multiplicity.getEnum((String) end.get("mult"));
     }
 
+    public End() {
+    }
+
     public String getCurrentClass() {
         return currentClazz;
     }
@@ -97,4 +100,22 @@ public class End {
                 + "opp : " + this.opp + "\n"
                 + "mult : " + this.mult + ";\n";
     }
+
+    public void setTargetClass(String currentClazz) {
+        this.currentClazz = currentClazz;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setOpp(String opp) {
+        this.opp = opp;
+    }
+
+    public void setMult(Multiplicity mult) {
+        this.mult = mult;
+    }
+    
+    
 }

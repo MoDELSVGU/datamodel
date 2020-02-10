@@ -49,6 +49,10 @@ public class Attribute {
         }
     }
 
+    public Attribute() {
+        constraints = new HashSet<Constraint>();
+    }
+
     public String getName() {
         return name;
     }
@@ -66,5 +70,19 @@ public class Attribute {
         return "Name: " + name + "\n"
                 + "Type: " + type + "\n";
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setConstraints(Set<Constraint> constraints) {
+        this.constraints = constraints;
+    }
+    
+    
 
 }

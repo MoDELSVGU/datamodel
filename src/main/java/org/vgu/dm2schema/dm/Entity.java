@@ -57,6 +57,12 @@ public class Entity {
         }
     }
 
+    public Entity() {
+        attributes = new HashSet<Attribute>();
+        this.attributes = new HashSet<Attribute>();
+        this.ends = new HashSet<End>();
+    }
+
     public String getName() {
         return clazz;
     }
@@ -72,5 +78,9 @@ public class Entity {
     @Override
     public String toString() {
         return "Class : " + clazz + "\n";
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
     }
 }

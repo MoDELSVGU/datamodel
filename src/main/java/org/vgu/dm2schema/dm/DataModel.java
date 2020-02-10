@@ -59,6 +59,11 @@ public class DataModel {
         collectAssociations(this.entities);
     }
 
+    public DataModel() {
+        entities = new HashMap<String, Entity>();
+        invariants = new HashSet<Invariants>();
+    }
+
     public Map<String, Entity> getEntities() {
         return entities;
     }
@@ -110,6 +115,10 @@ public class DataModel {
         }
 
         return pairEnds;
+    }
+
+    public void formAssociations() {
+        collectAssociations(entities);
     }
     
 }
