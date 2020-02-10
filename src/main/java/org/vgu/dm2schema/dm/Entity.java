@@ -30,6 +30,11 @@ public class Entity {
     private String clazz;
     private Set<Attribute> attributes;
     private Set<End> ends;
+    
+    public Entity() {
+        attributes = new HashSet<Attribute>();
+        this.ends = new HashSet<End>();
+    };
 
     public Entity(Object object) throws Exception {
         if (!(object instanceof JSONObject))
@@ -37,7 +42,6 @@ public class Entity {
         attributes = new HashSet<Attribute>();
         JSONObject entity = (JSONObject) object;
         this.clazz = (String) entity.get("class");
-        this.attributes = new HashSet<Attribute>();
         @SuppressWarnings("unchecked")
         List<JSONObject> attributes = (JSONArray) entity.get("attributes");
         if(Objects.nonNull(attributes)) {
@@ -80,7 +84,19 @@ public class Entity {
         return "Class : " + clazz + "\n";
     }
 
+    public String getClazz() {
+        return clazz;
+    }
+
     public void setClazz(String clazz) {
         this.clazz = clazz;
+    }
+
+    public void setAttributes(Set<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setEnds(Set<End> ends) {
+        this.ends = ends;
     }
 }

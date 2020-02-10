@@ -26,6 +26,8 @@ public class End {
     private String currentClazz;
     private String opp;
     private Multiplicity mult;
+    
+    public End() {};
 
     public End(Object object) throws Exception {
         if (!(object instanceof JSONObject))
@@ -101,8 +103,8 @@ public class End {
                 + "mult : " + this.mult + ";\n";
     }
 
-    public void setTargetClass(String currentClazz) {
-        this.currentClazz = currentClazz;
+    public void setTargetClass(String targetClazz) {
+        this.targetClazz = targetClazz;
     }
 
     public void setName(String name) {
@@ -116,6 +118,5 @@ public class End {
     public void setMult(Multiplicity mult) {
         this.mult = mult;
     }
-    
     
 }

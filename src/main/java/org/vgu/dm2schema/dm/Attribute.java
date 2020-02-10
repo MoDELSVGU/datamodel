@@ -30,6 +30,10 @@ public class Attribute {
     private String name;
     private String type;
     private Set<Constraint> constraints;
+    
+    public Attribute() {
+        constraints = new HashSet<Constraint>();
+    }
 
     public Attribute(Object object) throws Exception {
         if (!(object instanceof JSONObject))
