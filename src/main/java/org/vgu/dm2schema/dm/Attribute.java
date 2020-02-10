@@ -53,10 +53,6 @@ public class Attribute {
         }
     }
 
-    public Attribute() {
-        constraints = new HashSet<Constraint>();
-    }
-
     public String getName() {
         return name;
     }

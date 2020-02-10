@@ -39,9 +39,6 @@ public class End {
         this.mult = Multiplicity.getEnum((String) end.get("mult"));
     }
 
-    public End() {
-    }
-
     public String getCurrentClass() {
         return currentClazz;
     }

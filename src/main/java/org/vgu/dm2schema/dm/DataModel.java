@@ -64,11 +64,6 @@ public class DataModel {
         formAssociations(this.entities);
     }
 
-    public DataModel() {
-        entities = new HashMap<String, Entity>();
-        invariants = new HashSet<Invariants>();
-    }
-
     public Map<String, Entity> getEntities() {
         return entities;
     }

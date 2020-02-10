@@ -61,12 +61,6 @@ public class Entity {
         }
     }
 
-    public Entity() {
-        attributes = new HashSet<Attribute>();
-        this.attributes = new HashSet<Attribute>();
-        this.ends = new HashSet<End>();
-    }
-
     public String getName() {
         return clazz;
     }
