@@ -30,7 +30,8 @@ public class Entity {
     private String clazz;
     private Set<Attribute> attributes;
     private Set<End> ends;
-    
+    private boolean isUserClass;
+
     public Entity() {
         attributes = new HashSet<Attribute>();
         this.ends = new HashSet<End>();
@@ -44,7 +45,7 @@ public class Entity {
         this.clazz = (String) entity.get("class");
         @SuppressWarnings("unchecked")
         List<JSONObject> attributes = (JSONArray) entity.get("attributes");
-        if(Objects.nonNull(attributes)) {
+        if (Objects.nonNull(attributes)) {
             for (JSONObject attribute : attributes) {
                 this.attributes.add(new Attribute(attribute));
             }
@@ -52,13 +53,15 @@ public class Entity {
         this.ends = new HashSet<End>();
         @SuppressWarnings("unchecked")
         List<JSONObject> ends = (JSONArray) entity.get("ends");
-        if(Objects.nonNull(ends)) {
+        if (Objects.nonNull(ends)) {
             for (JSONObject obj : ends) {
                 End end = new End(obj);
                 end.setCurrentClass(this.clazz);
                 this.ends.add(end);
             }
         }
+        this.isUserClass = entity.containsKey("isUserClass")
+            && (Boolean) entity.get("isUserClass");
     }
 
     public String getName() {
@@ -92,5 +95,13 @@ public class Entity {
 
     public void setEnds(Set<End> ends) {
         this.ends = ends;
+    }
+
+    public boolean isUserClass() {
+        return isUserClass;
+    }
+
+    public void setUserClass(boolean isUserClass) {
+        this.isUserClass = isUserClass;
     }
 }
