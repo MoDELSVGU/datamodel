@@ -61,7 +61,7 @@ public class Entity {
             }
         }
         this.isUserClass = entity.containsKey("isUserClass")
-            && (Boolean) entity.get("isUserClass");
+            && ((String) entity.get("isUserClass")).equalsIgnoreCase("true");
     }
 
     public String getName() {
