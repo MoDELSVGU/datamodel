@@ -34,7 +34,7 @@ public class End {
         if (!(object instanceof JSONObject))
             throw new Exception();
         JSONObject end = (JSONObject) object;
-        this.setAssociation((String) end.get("association"));
+        this.association = (String) end.get("association");
         this.name = (String) end.get("name");
         this.targetClazz = (String) end.get("target");
         this.opp = (String) end.get("opp");
