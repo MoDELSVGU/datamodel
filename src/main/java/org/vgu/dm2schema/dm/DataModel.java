@@ -114,7 +114,7 @@ public class DataModel {
             boolean matchingFlag = false;
             for (int j = 0; j < filteredEnds.size(); j++) {
                 if (filteredEnds.get(j).equals(ends.get(i))) {
-                    pairEnds.add(new Association(filteredEnds.get(j),
+                    pairEnds.add(new Association(filteredEnds.get(j).getAssociation(), filteredEnds.get(j),
                             ends.get(i)));
                     matchingFlag = true;
                     break;
