@@ -26,9 +26,9 @@ public class Association extends Pair<End, End> {
     private String leftEntityName;
     private String rightEntityName;
 
-    public Association(End left, End right) {
+    public Association(String name, End left, End right) {
         super(left, right);
-        this.name = this.generateName();
+        this.name = name;
         this.leftEnd = this.getLeft().getOpp();
         this.rightEnd = this.getRight().getOpp();
         this.leftEntityName = this.getLeft().getCurrentClass();

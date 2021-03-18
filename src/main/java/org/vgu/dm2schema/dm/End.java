@@ -21,6 +21,7 @@ package org.vgu.dm2schema.dm;
 import org.json.simple.JSONObject;
 
 public class End {
+    private String association;
     private String name;
     private String targetClazz;
     private String currentClazz;
@@ -33,6 +34,7 @@ public class End {
         if (!(object instanceof JSONObject))
             throw new Exception();
         JSONObject end = (JSONObject) object;
+        this.association = (String) end.get("association");
         this.name = (String) end.get("name");
         this.targetClazz = (String) end.get("target");
         this.opp = (String) end.get("opp");
@@ -114,6 +116,14 @@ public class End {
 
     public void setMult(Multiplicity mult) {
         this.mult = mult;
+    }
+
+    public String getAssociation() {
+        return association;
+    }
+
+    public void setAssociation(String association) {
+        this.association = association;
     }
     
 }
