@@ -1,18 +1,14 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 @author: ngpbh
 ***************************************************************************/
 
@@ -31,6 +27,8 @@ public class Entity {
     private Set<Attribute> attributes;
     private Set<End> ends;
     private boolean isUserClass;
+    /*** 28th Oct, Hoang: Adding generalization ***/
+    private Entity superClass;
 
     public Entity() {
         attributes = new HashSet<Attribute>();
@@ -62,6 +60,11 @@ public class Entity {
         }
         this.isUserClass = entity.containsKey("isUserClass")
             && ((String) entity.get("isUserClass")).equalsIgnoreCase("true");
+        if(entity.containsKey("super")) {
+            Entity e = new Entity();
+            e.setClazz((String) entity.get("super"));
+            this.superClass = e;
+        }
     }
 
     public String getName() {
@@ -103,5 +106,13 @@ public class Entity {
 
     public void setUserClass(boolean isUserClass) {
         this.isUserClass = isUserClass;
+    }
+
+    public Entity getSuperClass() {
+        return superClass;
+    }
+
+    public void setSuperClass(Entity superClass) {
+        this.superClass = superClass;
     }
 }

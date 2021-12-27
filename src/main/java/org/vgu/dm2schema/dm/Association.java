@@ -1,18 +1,14 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 @author: ngpbh, thian
 ***************************************************************************/
 
@@ -26,9 +22,9 @@ public class Association extends Pair<End, End> {
     private String leftEntityName;
     private String rightEntityName;
 
-    public Association(String name, End left, End right) {
+    public Association(End left, End right) {
         super(left, right);
-        this.name = name;
+        this.name = this.generateName();
         this.leftEnd = this.getLeft().getOpp();
         this.rightEnd = this.getRight().getOpp();
         this.leftEntityName = this.getLeft().getCurrentClass();
@@ -51,11 +47,11 @@ public class Association extends Pair<End, End> {
             return super.getLeft();
     }
 
-    @SuppressWarnings("unused")
-	private String generateName() {
+    private String generateName() {
         End targetEnd = this.getLeft();
         return String.format("%1$s_%2$s_%3$s_%4$s", targetEnd.getCurrentClass(),
-            targetEnd.getOpp(), targetEnd.getName(), targetEnd.getTargetClass());
+            targetEnd.getOpp(), targetEnd.getName(),
+            targetEnd.getTargetClass());
     }
 
     public String getName() {
@@ -82,14 +78,21 @@ public class Association extends Pair<End, End> {
         return this.getLeft().getMult() == Multiplicity.MANY
             && this.getRight().getMult() == Multiplicity.MANY;
     }
-    
+
     public Boolean isManyToOne() {
         return this.getLeft().getMult() == Multiplicity.MANY
             ^ this.getRight().getMult() == Multiplicity.MANY;
     }
-    
+
     public End getManyEnd() {
-        if(this.getLeft().getMult() == Multiplicity.MANY)
+        if (this.getLeft().getMult() == Multiplicity.MANY)
+            return this.getLeft();
+        else
+            return this.getRight();
+    }
+    
+    public End getOneEnd() {
+        if (this.getLeft().getMult() == Multiplicity.ONE)
             return this.getLeft();
         else
             return this.getRight();
@@ -102,8 +105,8 @@ public class Association extends Pair<End, End> {
 
     @Override
     public String toString() {
-        return this.leftEntityName + " " + super.getLeft().getMult()
-                + " <--> " + super.getRight().getMult() + " "
-                + this.rightEntityName + "\n";
+        return String.format("%1$s (%2$s) %3$s <--> %4$s (%5$s) %6$s",
+            this.leftEntityName, this.leftEnd, super.getRight().getMult(),
+            super.getLeft().getMult(), this.rightEnd, this.rightEntityName);
     }
 }

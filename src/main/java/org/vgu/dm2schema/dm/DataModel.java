@@ -1,18 +1,14 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-
 @author: ngpbh, thian
 ***************************************************************************/
 
@@ -62,6 +58,19 @@ public class DataModel {
         }
 
         formAssociations(this.entities);
+        /*** 28th Oct, Hoang: Adding generalization ***/
+        formGeneralizatoins(this.entities);
+    }
+
+    /*** 28th Oct, Hoang: Adding generalization ***/
+    private void formGeneralizatoins(Map<String, Entity> _entities) {
+        for(String entityName : _entities.keySet()) {
+            Entity entity = _entities.get(entityName);
+            if(entity.getSuperClass() != null) {
+                String superClassName = entity.getSuperClass().getName();
+                entity.setSuperClass(_entities.get(superClassName));
+            }
+        }
     }
 
     public Map<String, Entity> getEntities() {
@@ -114,7 +123,7 @@ public class DataModel {
             boolean matchingFlag = false;
             for (int j = 0; j < filteredEnds.size(); j++) {
                 if (filteredEnds.get(j).equals(ends.get(i))) {
-                    pairEnds.add(new Association(filteredEnds.get(j).getAssociation(), filteredEnds.get(j),
+                    pairEnds.add(new Association(filteredEnds.get(j),
                             ends.get(i)));
                     matchingFlag = true;
                     break;
