@@ -51,7 +51,8 @@ public class Association extends Pair<End, End> {
             return super.getLeft();
     }
 
-    private String generateName() {
+    @SuppressWarnings("unused")
+	private String generateName() {
         End targetEnd = this.getLeft();
         return String.format("%1$s_%2$s_%3$s_%4$s", targetEnd.getCurrentClass(),
             targetEnd.getOpp(), targetEnd.getName(), targetEnd.getTargetClass());
