@@ -376,7 +376,7 @@ public class DM2Schema {
         for (Constraint constraint : attribute.getConstraints()) {
             constraints.add(constraint.getConstraint());
         }
-        column.setColumnSpecStrings(constraints);
+        column.setColumnSpecs(constraints);
         column.setColDataType(colDataType);
         return column;
     }
@@ -388,7 +388,7 @@ public class DM2Schema {
         idDataType.setDataType("VARCHAR");
         idDataType.setArgumentsStringList(Arrays.asList("100"));
         idColumn.setColDataType(idDataType);
-        idColumn.setColumnSpecStrings(
+        idColumn.setColumnSpecs(
             Arrays.asList(NOT_NULL, PRIMARY_KEY));
         return idColumn;
     }
