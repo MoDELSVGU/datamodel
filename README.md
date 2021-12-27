@@ -1,2 +1,3 @@
-# dm2schema
- A code generator from defined data-model to SQL database schemata
+# datamodel
+A datamodel java-parser and 
+a MySQL model-to-code generator.
