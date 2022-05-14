@@ -24,7 +24,7 @@ public class Association extends Pair<End, End> {
 
     public Association(End left, End right) {
         super(left, right);
-        this.name = this.generateName();
+        this.name = left.getAssociation();
         this.leftEnd = this.getLeft().getOpp();
         this.rightEnd = this.getRight().getOpp();
         this.leftEntityName = this.getLeft().getCurrentClass();
@@ -45,13 +45,6 @@ public class Association extends Pair<End, End> {
             return super.getRight();
         else
             return super.getLeft();
-    }
-
-    private String generateName() {
-        End targetEnd = this.getLeft();
-        return String.format("%1$s_%2$s_%3$s_%4$s", targetEnd.getCurrentClass(),
-            targetEnd.getOpp(), targetEnd.getName(),
-            targetEnd.getTargetClass());
     }
 
     public String getName() {

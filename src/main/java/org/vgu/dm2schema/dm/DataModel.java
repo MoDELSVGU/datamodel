@@ -26,7 +26,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class DataModel {
-//    private Set<Entity> entities;
     private Map<String, Entity> entities;
     private Set<Invariants> invariants;
     private Set<Association> associations;
@@ -41,7 +40,6 @@ public class DataModel {
         if (!(object instanceof JSONArray))
             throw new Exception();
 
-//        entities = new HashSet<Entity>();
         entities = new HashMap<String, Entity>();
         invariants = new HashSet<Invariants>();
 
@@ -58,11 +56,9 @@ public class DataModel {
         }
 
         formAssociations(this.entities);
-        /*** 28th Oct, Hoang: Adding generalization ***/
         formGeneralizatoins(this.entities);
     }
 
-    /*** 28th Oct, Hoang: Adding generalization ***/
     private void formGeneralizatoins(Map<String, Entity> _entities) {
         for(String entityName : _entities.keySet()) {
             Entity entity = _entities.get(entityName);
