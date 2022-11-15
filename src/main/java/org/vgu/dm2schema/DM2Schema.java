@@ -1,36 +1,36 @@
 /**************************************************************************
-Copyright 2019 Vietnamese-German-University
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-@author: ngpbh
-***************************************************************************/
+ * Copyright 2019 Vietnamese-German-University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author: ngpbh
+ ***************************************************************************/
 
 package org.vgu.dm2schema;
 
 import static org.vgu.dm2schema.dm.MySQLConstraint.NOT_NULL;
 import static org.vgu.dm2schema.dm.MySQLConstraint.PRIMARY_KEY;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import net.sf.jsqlparser.schema.Database;
+import net.sf.jsqlparser.schema.Table;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.UseStatement;
+import net.sf.jsqlparser.statement.alter.Alter;
+import net.sf.jsqlparser.statement.alter.AlterExpression;
+import net.sf.jsqlparser.statement.alter.AlterOperation;
+import net.sf.jsqlparser.statement.create.table.ColDataType;
+import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
+import net.sf.jsqlparser.statement.create.table.CreateTable;
 
 import org.json.simple.parser.JSONParser;
 import org.vgu.dm2schema.dm.Association;
@@ -48,34 +48,34 @@ import org.vgu.dm2schema.sql.Function;
 import org.vgu.dm2schema.sql.Trigger;
 import org.vgu.dm2schema.sql.TriggerAction;
 
-import net.sf.jsqlparser.schema.Database;
-import net.sf.jsqlparser.schema.Table;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.UseStatement;
-import net.sf.jsqlparser.statement.alter.Alter;
-import net.sf.jsqlparser.statement.alter.AlterExpression;
-import net.sf.jsqlparser.statement.alter.AlterOperation;
-import net.sf.jsqlparser.statement.create.table.ColDataType;
-import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
-import net.sf.jsqlparser.statement.create.table.CreateTable;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DM2Schema {
 
-    public static String generateDatabase(DataModel context,
-        String databaseName) {
+    public static String generateDatabase(DataModel context, String databaseName) {
         List<String> schema = new ArrayList<String>();
 
         List<String> DBStatements = generateDBStatements(databaseName);
         schema.addAll(DBStatements);
 
         List<Statement> entityStatements = generateEntityStatements(context);
-        schema.addAll(entityStatements.stream().map(Statement::toString)
-            .collect(Collectors.toList()));
+        schema.addAll(
+                entityStatements.stream().map(Statement::toString).collect(Collectors.toList()));
 
-        List<Statement> associationStatements = generateAssociationStatements(
-            context);
-        schema.addAll(associationStatements.stream().map(Statement::toString)
-            .collect(Collectors.toList()));
+        List<Statement> associationStatements = generateAssociationStatements(context);
+        schema.addAll(
+                associationStatements.stream()
+                        .map(Statement::toString)
+                        .collect(Collectors.toList()));
 
         String script = "";
 
@@ -86,13 +86,13 @@ public class DM2Schema {
     }
 
     public static void main(String[] args) throws Exception {
-        File dataModelFile = new File(
-            "src/main/resources/genSQL/uni_pof_dm.json");
+        File dataModelFile = new File("src/main/resources/genSQL/uni_pof_dm.json");
         File SQLschemaFile = new File("src/main/resources/genSQL/pof.sql");
         String databaseName = "unipof";
 
-        DataModel dataModel = new DataModel(new JSONParser()
-            .parse(new FileReader(dataModelFile.getAbsolutePath())));
+        DataModel dataModel =
+                new DataModel(
+                        new JSONParser().parse(new FileReader(dataModelFile.getAbsolutePath())));
         FileWriter fileWriter = new FileWriter(SQLschemaFile);
 
         List<String> schema = new ArrayList<String>();
@@ -101,27 +101,29 @@ public class DM2Schema {
         schema.addAll(DBStatements);
 
         List<Statement> entityStatements = generateEntityStatements(dataModel);
-        schema.addAll(entityStatements.stream().map(Statement::toString)
-            .collect(Collectors.toList()));
+        schema.addAll(
+                entityStatements.stream().map(Statement::toString).collect(Collectors.toList()));
 
-        List<Statement> associationStatements = generateAssociationStatements(
-            dataModel);
-        schema.addAll(associationStatements.stream().map(Statement::toString)
-            .collect(Collectors.toList()));
+        List<Statement> associationStatements = generateAssociationStatements(dataModel);
+        schema.addAll(
+                associationStatements.stream()
+                        .map(Statement::toString)
+                        .collect(Collectors.toList()));
 
-//        List<String> invariantFunctions = generateInvariantFunctions(dataModel);
-//        schema.addAll(invariantFunctions);
+        //        List<String> invariantFunctions = generateInvariantFunctions(dataModel);
+        //        schema.addAll(invariantFunctions);
 
-//        List<String> invariantTriggers = generateInvariantTriggers(dataModel);
-//        schema.addAll(invariantTriggers);
+        //        List<String> invariantTriggers = generateInvariantTriggers(dataModel);
+        //        schema.addAll(invariantTriggers);
 
-        schema.forEach(statement -> {
-            try {
-                fileWriter.write(SQLStatementHelper.transform(statement));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        schema.forEach(
+                statement -> {
+                    try {
+                        fileWriter.write(SQLStatementHelper.transform(statement));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
 
         fileWriter.flush();
         fileWriter.close();
@@ -151,13 +153,11 @@ public class DM2Schema {
         return invariantTriggers;
     }
 
-    private static List<Statement> generateAssociationStatements(
-        DataModel dataModel) {
+    private static List<Statement> generateAssociationStatements(DataModel dataModel) {
         return createAssociationStatements(dataModel.getAssociations());
     }
 
-    private static List<Statement> generateEntityStatements(
-        DataModel dataModel) {
+    private static List<Statement> generateEntityStatements(DataModel dataModel) {
         return createTablesStatements(dataModel.getEntities());
     }
 
@@ -179,24 +179,21 @@ public class DM2Schema {
         return dbstatements;
     }
 
-    private static List<Statement> createAssociationStatements(
-        Set<Association> associations) {
+    private static List<Statement> createAssociationStatements(Set<Association> associations) {
         List<Statement> associationTables = new ArrayList<Statement>();
         for (Association association : associations) {
-            if (association.isManyToMany())
-                associationTables.addAll(createAssociationTable(association));
-            else if (association.isManyToOne()) {
+            // if (association.isManyToMany())
+            // associationTables.addAll(createAssociationTable(association));
+            if (association.isManyToOne()) {
                 associationTables.addAll(createReferences(association));
             } else if (association.isOneToOne()) {
-                associationTables
-                    .addAll(createBothSidesReferences(association));
+                associationTables.addAll(createBothSidesReferences(association));
             }
         }
         return associationTables;
     }
 
-    private static List<Statement> createBothSidesReferences(
-        Association association) {
+    private static List<Statement> createBothSidesReferences(Association association) {
         End leftEnd = association.getLeft();
         End rightEnd = association.getRight();
 
@@ -208,17 +205,16 @@ public class DM2Schema {
         AlterExpression addLeftColumnExpression = new AlterExpression();
         AlterExpression referenceLeftExpression = new AlterExpression();
         foreignLeftKeys.setAlterExpressions(
-            Arrays.asList(addLeftColumnExpression, referenceLeftExpression));
+                Arrays.asList(addLeftColumnExpression, referenceLeftExpression));
         addLeftColumnExpression.setOperation(AlterOperation.ADD);
         ColDataType referenceLeftColumnDataType = new ColDataType();
         referenceLeftColumnDataType.setDataType("INT");
         referenceLeftColumnDataType.setArgumentsStringList(Arrays.asList("11"));
-        addLeftColumnExpression.addColDataType(leftEnd.getOpp(),
-            referenceLeftColumnDataType);
+        addLeftColumnExpression.addColDataType(leftEnd.getOpp(), referenceLeftColumnDataType);
         referenceLeftExpression.setOperation(AlterOperation.ADD);
         referenceLeftExpression.setFkColumns(Arrays.asList(leftEnd.getOpp()));
         referenceLeftExpression.setFkSourceColumns(
-            Arrays.asList(String.format("%1$s_id", leftEnd.getCurrentClass())));
+                Arrays.asList(String.format("%1$s_id", leftEnd.getCurrentClass())));
         referenceLeftExpression.setFkSourceTable(leftEnd.getCurrentClass());
         Alter foreignRightKeys = new Alter();
         foreignReferences.add(foreignRightKeys);
@@ -228,18 +224,16 @@ public class DM2Schema {
         AlterExpression addRightColumnExpression = new AlterExpression();
         AlterExpression referenceRightExpression = new AlterExpression();
         foreignRightKeys.setAlterExpressions(
-            Arrays.asList(addRightColumnExpression, referenceRightExpression));
+                Arrays.asList(addRightColumnExpression, referenceRightExpression));
         addRightColumnExpression.setOperation(AlterOperation.ADD);
         ColDataType referenceRightColumnDataType = new ColDataType();
         referenceRightColumnDataType.setDataType("INT");
-        referenceRightColumnDataType
-            .setArgumentsStringList(Arrays.asList("11"));
-        addRightColumnExpression.addColDataType(rightEnd.getOpp(),
-            referenceRightColumnDataType);
+        referenceRightColumnDataType.setArgumentsStringList(Arrays.asList("11"));
+        addRightColumnExpression.addColDataType(rightEnd.getOpp(), referenceRightColumnDataType);
         referenceRightExpression.setOperation(AlterOperation.ADD);
         referenceRightExpression.setFkColumns(Arrays.asList(rightEnd.getOpp()));
-        referenceRightExpression.setFkSourceColumns(Arrays
-            .asList(String.format("%1$s_id", rightEnd.getCurrentClass())));
+        referenceRightExpression.setFkSourceColumns(
+                Arrays.asList(String.format("%1$s_id", rightEnd.getCurrentClass())));
         referenceRightExpression.setFkSourceTable(rightEnd.getCurrentClass());
 
         return foreignReferences;
@@ -254,24 +248,21 @@ public class DM2Schema {
         foreignKeys.setTable(table);
         AlterExpression addColumnExpression = new AlterExpression();
         AlterExpression referenceExpression = new AlterExpression();
-        foreignKeys.setAlterExpressions(
-            Arrays.asList(addColumnExpression, referenceExpression));
+        foreignKeys.setAlterExpressions(Arrays.asList(addColumnExpression, referenceExpression));
         addColumnExpression.setOperation(AlterOperation.ADD);
         ColDataType referenceColumnDataType = new ColDataType();
         referenceColumnDataType.setDataType("INT");
         referenceColumnDataType.setArgumentsStringList(Arrays.asList("11"));
-        addColumnExpression.addColDataType(manyEnd.getOpp(),
-            referenceColumnDataType);
+        addColumnExpression.addColDataType(manyEnd.getOpp(), referenceColumnDataType);
         referenceExpression.setOperation(AlterOperation.ADD);
         referenceExpression.setFkColumns(Arrays.asList(manyEnd.getOpp()));
         referenceExpression.setFkSourceColumns(
-            Arrays.asList(String.format("%1$s_id", manyEnd.getCurrentClass())));
+                Arrays.asList(String.format("%1$s_id", manyEnd.getCurrentClass())));
         referenceExpression.setFkSourceTable(manyEnd.getCurrentClass());
         return foreignReferences;
     }
 
-    private static List<Statement> createAssociationTable(
-        Association association) {
+    private static List<Statement> createAssociationTable(Association association) {
         List<Statement> createAssocTableStatements = new ArrayList<Statement>();
         CreateTable createAssociation = new CreateTable();
         createAssocTableStatements.add(createAssociation);
@@ -282,11 +273,9 @@ public class DM2Schema {
         List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
         createAssociation.setColumnDefinitions(columns);
         // Add association-ends
-        ColumnDefinition leftColumn = createAssociationColumn(
-            association.getLeftEnd());
+        ColumnDefinition leftColumn = createAssociationColumn(association.getLeftEnd());
         columns.add(leftColumn);
-        ColumnDefinition rightColumn = createAssociationColumn(
-            association.getRightEnd());
+        ColumnDefinition rightColumn = createAssociationColumn(association.getRightEnd());
         columns.add(rightColumn);
 
         Alter foreignKeys = new Alter();
@@ -294,19 +283,18 @@ public class DM2Schema {
         foreignKeys.setTable(table);
         AlterExpression leftExpression = new AlterExpression();
         AlterExpression rightExpression = new AlterExpression();
-        foreignKeys.setAlterExpressions(
-            Arrays.asList(leftExpression, rightExpression));
+        foreignKeys.setAlterExpressions(Arrays.asList(leftExpression, rightExpression));
 
         leftExpression.setOperation(AlterOperation.ADD);
         leftExpression.setFkColumns(Arrays.asList(association.getLeftEnd()));
-        leftExpression.setFkSourceColumns(Arrays
-            .asList(String.format("%1$s_id", association.getLeftEntityName())));
+        leftExpression.setFkSourceColumns(
+                Arrays.asList(String.format("%1$s_id", association.getLeftEntityName())));
         leftExpression.setFkSourceTable(association.getLeftEntityName());
 
         rightExpression.setOperation(AlterOperation.ADD);
         rightExpression.setFkColumns(Arrays.asList(association.getRightEnd()));
-        rightExpression.setFkSourceColumns(Arrays.asList(
-            String.format("%1$s_id", association.getRightEntityName())));
+        rightExpression.setFkSourceColumns(
+                Arrays.asList(String.format("%1$s_id", association.getRightEntityName())));
         rightExpression.setFkSourceTable(association.getRightEntityName());
         return createAssocTableStatements;
     }
@@ -322,8 +310,7 @@ public class DM2Schema {
         return column;
     }
 
-    private static List<Statement> createTablesStatements(
-        Map<String, Entity> entities) {
+    private static List<Statement> createTablesStatements(Map<String, Entity> entities) {
         List<Statement> tables = new ArrayList<Statement>();
         for (Map.Entry<String, Entity> entry : entities.entrySet()) {
             Entity entity = entry.getValue();
@@ -344,7 +331,7 @@ public class DM2Schema {
                 ColumnDefinition column = createAttributeColumn(attribute);
                 columns.add(column);
             }
-            if(entity.isUserClass()) {
+            if (entity.isUserClass()) {
                 ColumnDefinition roleColumn = createRoleColumn();
                 columns.add(roleColumn);
             }
@@ -367,10 +354,8 @@ public class DM2Schema {
         column.setColumnName(attribute.getName());
         // Set column type
         ColDataType colDataType = new ColDataType();
-        colDataType
-            .setDataType(DM2SQLTypeConversion.convert(attribute.getType()));
-        colDataType.setArgumentsStringList(
-            DM2SQLTypeConversion.addArgument(attribute.getType()));
+        colDataType.setDataType(DM2SQLTypeConversion.convert(attribute.getType()));
+        colDataType.setArgumentsStringList(DM2SQLTypeConversion.addArgument(attribute.getType()));
         // Set column constraints
         List<String> constraints = new ArrayList<String>();
         for (Constraint constraint : attribute.getConstraints()) {
@@ -388,9 +373,7 @@ public class DM2Schema {
         idDataType.setDataType("VARCHAR");
         idDataType.setArgumentsStringList(Arrays.asList("100"));
         idColumn.setColDataType(idDataType);
-        idColumn.setColumnSpecStrings(
-            Arrays.asList(NOT_NULL, PRIMARY_KEY));
+        idColumn.setColumnSpecStrings(Arrays.asList(NOT_NULL, PRIMARY_KEY));
         return idColumn;
     }
-
 }

@@ -1,22 +1,25 @@
 /**************************************************************************
-Copyright 2019 Vietnamese-German-University
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-@author: ngpbh, thian
-***************************************************************************/
+ * Copyright 2019 Vietnamese-German-University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author: ngpbh, thian
+ ***************************************************************************/
 
 package org.vgu.dm2schema.dm;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,28 +29,29 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 public class DataModel {
-//    private Set<Entity> entities;
+    //    private Set<Entity> entities;
     private Map<String, Entity> entities;
     private Set<Invariants> invariants;
     private Set<Association> associations;
-    
+    private Set<AssociationClass> associationClasses;
+
     public DataModel() {
         entities = new HashMap<String, Entity>();
         invariants = new HashSet<Invariants>();
-    };
+        associations = new HashSet<Association>();
+        associationClasses = new HashSet<AssociationClass>();
+    }
+    ;
 
     public DataModel(Object object) throws Exception {
 
-        if (!(object instanceof JSONArray))
-            throw new Exception();
+        if (!(object instanceof JSONArray)) throw new Exception();
 
-//        entities = new HashSet<Entity>();
+        //        entities = new HashSet<Entity>();
         entities = new HashMap<String, Entity>();
         invariants = new HashSet<Invariants>();
+        associationClasses = new HashSet<AssociationClass>();
 
         @SuppressWarnings("unchecked")
         List<JSONObject> dataModel = (JSONArray) object;
@@ -58,6 +62,8 @@ public class DataModel {
                 entities.put(className, new Entity(element));
             } else if (element.containsKey("invariants")) {
                 invariants.add(new Invariants(element));
+            } else if (element.containsKey("association-class")) {
+                associationClasses.add(new AssociationClass(element));
             }
         }
 
@@ -71,13 +77,17 @@ public class DataModel {
     public Set<Invariants> getInvariants() {
         return invariants;
     }
-    
+
     public List<Invariant> getInvariantsFlatten() {
         return invariants.stream().flatMap(ArrayList::stream).collect(Collectors.toList());
     }
 
     public Set<Association> getAssociations() {
         return associations;
+    }
+
+    public Set<AssociationClass> getAssociationClasses() {
+        return associationClasses;
     }
 
     public void formAssociations(Map<String, Entity> entities) {
@@ -91,7 +101,7 @@ public class DataModel {
 
         this.associations = filterDuplicatedAssociation(ends);
     }
-    
+
     public void formAssociations() {
         List<End> ends = new ArrayList<>();
 
@@ -104,8 +114,7 @@ public class DataModel {
         this.associations = filterDuplicatedAssociation(ends);
     }
 
-    private Set<Association> filterDuplicatedAssociation(
-            List<End> ends) {
+    private Set<Association> filterDuplicatedAssociation(List<End> ends) {
 
         List<End> filteredEnds = new ArrayList<End>();
         Set<Association> pairEnds = new HashSet<Association>();
@@ -114,8 +123,19 @@ public class DataModel {
             boolean matchingFlag = false;
             for (int j = 0; j < filteredEnds.size(); j++) {
                 if (filteredEnds.get(j).equals(ends.get(i))) {
-                    pairEnds.add(new Association(filteredEnds.get(j).getAssociation(), filteredEnds.get(j),
-                            ends.get(i)));
+                    Association candidateAssociation =
+                            new Association(
+                                    filteredEnds.get(j).getAssociation(),
+                                    filteredEnds.get(j),
+                                    ends.get(i));
+                    if (candidateAssociation.getLeft().getMult() == Multiplicity.MANY
+                            && candidateAssociation.getRight().getMult() == Multiplicity.MANY) {
+                        throw new RuntimeException(
+                                "Many-to-may associations using end key not allowed, please use"
+                                        + " association class");
+                    } else {
+                        pairEnds.add(candidateAssociation);
+                    }
                     matchingFlag = true;
                     break;
                 }
@@ -140,5 +160,4 @@ public class DataModel {
     public void setAssociations(Set<Association> associations) {
         this.associations = associations;
     }
-    
 }

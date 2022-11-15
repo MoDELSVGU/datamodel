@@ -1,45 +1,46 @@
 /**************************************************************************
-Copyright 2019 Vietnamese-German-University
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-@author: ngpbh
-***************************************************************************/
+ * Copyright 2019 Vietnamese-German-University
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @author: ngpbh
+ ***************************************************************************/
 
 package org.vgu.dm2schema.dm;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import java.util.stream.Collectors;
 
 public class Entity {
-    private String clazz;
-    private Set<Attribute> attributes;
-    private Set<End> ends;
+    protected String clazz;
+    protected Set<Attribute> attributes;
+    protected Set<End> ends;
     private boolean isUserClass;
 
     public Entity() {
         attributes = new HashSet<Attribute>();
         this.ends = new HashSet<End>();
-    };
+    }
+    ;
 
     public Entity(Object object) throws Exception {
-        if (!(object instanceof JSONObject))
-            throw new Exception();
+        if (!(object instanceof JSONObject)) throw new Exception();
         attributes = new HashSet<Attribute>();
         JSONObject entity = (JSONObject) object;
         this.clazz = (String) entity.get("class");
@@ -60,8 +61,9 @@ public class Entity {
                 this.ends.add(end);
             }
         }
-        this.isUserClass = entity.containsKey("isUserClass")
-            && ((String) entity.get("isUserClass")).equalsIgnoreCase("true");
+        this.isUserClass =
+                entity.containsKey("isUserClass")
+                        && ((String) entity.get("isUserClass")).equalsIgnoreCase("true");
     }
 
     public String getName() {
@@ -78,7 +80,10 @@ public class Entity {
 
     @Override
     public String toString() {
-        return "Class : " + clazz + "\n";
+        String attributes =
+                this.attributes.stream().map(Attribute::toString).collect(Collectors.joining(", "));
+        String ends = this.ends.stream().map(End::toString).collect(Collectors.joining(", "));
+        return "Entity [clazz=" + clazz + ", attributes=" + attributes + " , ends= \n" + ends + "]";
     }
 
     public String getClazz() {
