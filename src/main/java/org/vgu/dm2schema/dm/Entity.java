@@ -28,9 +28,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Entity {
-    protected String clazz;
-    protected Set<Attribute> attributes;
-    protected Set<End> ends;
+    private String clazz;
+    private Set<Attribute> attributes;
+    private Set<End> ends;
     private boolean isUserClass;
 
     public Entity() {
@@ -86,9 +86,9 @@ public class Entity {
         return "Entity [clazz=" + clazz + ", attributes=" + attributes + " , ends= \n" + ends + "]";
     }
 
-    public String getClazz() {
-        return clazz;
-    }
+    // public String getClazz() {
+    //     return clazz;
+    // }
 
     public void setClazz(String clazz) {
         this.clazz = clazz;

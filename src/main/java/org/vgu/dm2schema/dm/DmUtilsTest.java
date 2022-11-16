@@ -38,8 +38,8 @@ public class DmUtilsTest {
         dataModel
                 .getAssociationClasses()
                 .forEach(
-                        association -> {
-                            System.out.println(association.toString());
+                        associationClass -> {
+                            System.out.println(associationClass.toString());
                         });
 
         // // test DmUtils

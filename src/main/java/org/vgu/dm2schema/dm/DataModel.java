@@ -63,7 +63,41 @@ public class DataModel {
             } else if (element.containsKey("invariants")) {
                 invariants.add(new Invariants(element));
             } else if (element.containsKey("association-class")) {
-                associationClasses.add(new AssociationClass(element));
+                // associationClasses.add(new AssociationClass(element));
+                String associationClassName = (String) element.get("association-class");
+
+                JSONArray JsonEnds = (JSONArray) element.get("ends");
+
+                ArrayList<End> ends = new ArrayList<End>();
+
+                for (Object end : JsonEnds) {
+                    End newEnd = new End();
+                    newEnd.setName((String) ((JSONObject) end).get("name"));
+                    // System.out.println((String) ((JSONObject) end).get("name"));
+                    newEnd.setTargetClass((String) ((JSONObject) end).get("target"));
+                    newEnd.setMult(Multiplicity.MANY);
+                    // newEnd.setOpp();
+                    ends.add(newEnd);
+                }
+
+                JSONArray JsonAttributes = (JSONArray) element.get("attributes");
+
+                Set<Attribute> attributes = new HashSet<Attribute>();
+
+                for (Object attribute : JsonAttributes) {
+                    attributes.add(new Attribute(attribute));
+                }
+
+                // ends.stream()
+                //         .forEach(
+                //                 end -> {
+                //                     System.out.println(end.toString());
+                //                 });
+                //
+
+                associationClasses.add(
+                        new AssociationClass(
+                                associationClassName, attributes, ends.get(0), ends.get(1)));
             }
         }
 

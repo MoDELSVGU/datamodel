@@ -20,11 +20,16 @@ package org.vgu.dm2schema.dm;
 
 public class Association extends Pair<End, End> {
 
-    private String name;
-    private String leftEnd;
-    private String rightEnd;
-    private String leftEntityName;
-    private String rightEntityName;
+    protected String name;
+    protected String leftEnd;
+    protected String rightEnd;
+    protected String leftEntityName;
+    protected String rightEntityName;
+
+    // public Association() {
+    //     super();
+    // }
+    // ;
 
     public Association(String name, End left, End right) {
         super(left, right);

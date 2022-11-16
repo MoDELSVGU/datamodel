@@ -34,6 +34,7 @@ import net.sf.jsqlparser.statement.create.table.CreateTable;
 
 import org.json.simple.parser.JSONParser;
 import org.vgu.dm2schema.dm.Association;
+import org.vgu.dm2schema.dm.AssociationClass;
 import org.vgu.dm2schema.dm.Attribute;
 import org.vgu.dm2schema.dm.Constraint;
 import org.vgu.dm2schema.dm.DataModel;
@@ -68,12 +69,33 @@ public class DM2Schema {
         schema.addAll(DBStatements);
 
         List<Statement> entityStatements = generateEntityStatements(context);
+
+        // entityStatements.forEach(
+        //         statement -> {
+        //             System.out.println(statement.toString());
+        //         });
+
         schema.addAll(
                 entityStatements.stream().map(Statement::toString).collect(Collectors.toList()));
 
         List<Statement> associationStatements = generateAssociationStatements(context);
+
         schema.addAll(
                 associationStatements.stream()
+                        .map(Statement::toString)
+                        .collect(Collectors.toList()));
+
+        List<Statement> associationClassStatements = generateAssociationClassStatement(context);
+
+        // associationClassStatement.forEach(
+        //         test -> {
+        //             System.out.println(test);
+        //         });
+
+        // List<Statement> associationClassStatement =
+
+        schema.addAll(
+                associationClassStatements.stream()
                         .map(Statement::toString)
                         .collect(Collectors.toList()));
 
@@ -82,6 +104,7 @@ public class DM2Schema {
         for (String schemata : schema) {
             script += SQLStatementHelper.transform(schemata);
         }
+
         return script;
     }
 
@@ -101,14 +124,38 @@ public class DM2Schema {
         schema.addAll(DBStatements);
 
         List<Statement> entityStatements = generateEntityStatements(dataModel);
+
+        entityStatements.forEach(
+                test -> {
+                    System.out.println(test.toString());
+                });
+
         schema.addAll(
                 entityStatements.stream().map(Statement::toString).collect(Collectors.toList()));
 
         List<Statement> associationStatements = generateAssociationStatements(dataModel);
+
+        // associationStatements.forEach(
+        //         test -> {
+        //             System.out.println(test);
+        //         });
+
         schema.addAll(
                 associationStatements.stream()
                         .map(Statement::toString)
                         .collect(Collectors.toList()));
+
+        List<Statement> associationClassStatements = generateAssociationClassStatement(dataModel);
+
+        schema.addAll(
+                associationClassStatements.stream()
+                        .map(Statement::toString)
+                        .collect(Collectors.toList()));
+
+        // associationClassStatement.forEach(
+        //         test -> {
+        //             System.out.println(test);
+        //         });
 
         //        List<String> invariantFunctions = generateInvariantFunctions(dataModel);
         //        schema.addAll(invariantFunctions);
@@ -157,6 +204,10 @@ public class DM2Schema {
         return createAssociationStatements(dataModel.getAssociations());
     }
 
+    private static List<Statement> generateAssociationClassStatement(DataModel dataModel) {
+        return createAssocitationClassStatements(dataModel.getAssociationClasses());
+    }
+
     private static List<Statement> generateEntityStatements(DataModel dataModel) {
         return createTablesStatements(dataModel.getEntities());
     }
@@ -182,8 +233,6 @@ public class DM2Schema {
     private static List<Statement> createAssociationStatements(Set<Association> associations) {
         List<Statement> associationTables = new ArrayList<Statement>();
         for (Association association : associations) {
-            // if (association.isManyToMany())
-            // associationTables.addAll(createAssociationTable(association));
             if (association.isManyToOne()) {
                 associationTables.addAll(createReferences(association));
             } else if (association.isOneToOne()) {
@@ -191,6 +240,15 @@ public class DM2Schema {
             }
         }
         return associationTables;
+    }
+
+    private static List<Statement> createAssocitationClassStatements(
+            Set<AssociationClass> associationClasses) {
+        List<Statement> associationClassTables = new ArrayList<Statement>();
+        for (AssociationClass associationClass : associationClasses) {
+            associationClassTables.addAll(createAssociationTable(associationClass));
+        }
+        return associationClassTables;
     }
 
     private static List<Statement> createBothSidesReferences(Association association) {
@@ -262,20 +320,33 @@ public class DM2Schema {
         return foreignReferences;
     }
 
-    private static List<Statement> createAssociationTable(Association association) {
+    private static List<Statement> createAssociationTable(AssociationClass associationClass) {
         List<Statement> createAssocTableStatements = new ArrayList<Statement>();
         CreateTable createAssociation = new CreateTable();
+
         createAssocTableStatements.add(createAssociation);
+
+        // createAssocTableStatements.forEach(
+        //         assocTable -> {
+        //             System.out.println(assocTable);
+        //         });
+
         // Get association name
-        Table table = new Table(association.getName());
+        Table table = new Table(associationClass.getName());
         createAssociation.setTable(table);
         // Get association-ends
         List<ColumnDefinition> columns = new ArrayList<ColumnDefinition>();
         createAssociation.setColumnDefinitions(columns);
+        //
+
+        ColumnDefinition idColumn = createIdentityColumn(table);
+        columns.add(idColumn);
         // Add association-ends
-        ColumnDefinition leftColumn = createAssociationColumn(association.getLeftEnd());
+        // ColumnDefinition leftColumn = createAssociationColumn(associationClass.getLeftEnd());
+        ColumnDefinition leftColumn = createAssociationColumn(associationClass.getLeft().getName());
         columns.add(leftColumn);
-        ColumnDefinition rightColumn = createAssociationColumn(association.getRightEnd());
+        ColumnDefinition rightColumn =
+                createAssociationColumn(associationClass.getRight().getName());
         columns.add(rightColumn);
 
         Alter foreignKeys = new Alter();
@@ -286,16 +357,25 @@ public class DM2Schema {
         foreignKeys.setAlterExpressions(Arrays.asList(leftExpression, rightExpression));
 
         leftExpression.setOperation(AlterOperation.ADD);
-        leftExpression.setFkColumns(Arrays.asList(association.getLeftEnd()));
+        leftExpression.setFkColumns(Arrays.asList(associationClass.getLeft().getName()));
         leftExpression.setFkSourceColumns(
-                Arrays.asList(String.format("%1$s_id", association.getLeftEntityName())));
-        leftExpression.setFkSourceTable(association.getLeftEntityName());
+                Arrays.asList(
+                        String.format("%1$s_id", associationClass.getLeft().getTargetClass())));
+        leftExpression.setFkSourceTable(associationClass.getLeft().getTargetClass());
 
         rightExpression.setOperation(AlterOperation.ADD);
-        rightExpression.setFkColumns(Arrays.asList(association.getRightEnd()));
+        rightExpression.setFkColumns(Arrays.asList(associationClass.getRight().getName()));
         rightExpression.setFkSourceColumns(
-                Arrays.asList(String.format("%1$s_id", association.getRightEntityName())));
-        rightExpression.setFkSourceTable(association.getRightEntityName());
+                Arrays.asList(
+                        String.format("%1$s_id", associationClass.getRight().getTargetClass())));
+        rightExpression.setFkSourceTable(associationClass.getRight().getTargetClass());
+
+        // adding the attribute columns of an AssociationClass
+        for (Attribute attribute : associationClass.getAttributes()) {
+            ColumnDefinition column = createAttributeColumn(attribute);
+            columns.add(column);
+        }
+
         return createAssocTableStatements;
     }
 

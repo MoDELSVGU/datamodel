@@ -1,40 +1,24 @@
 package org.vgu.dm2schema.dm;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+public class AssociationClass extends Association {
+    private Set<Attribute> attributes;
 
-public class AssociationClass extends Entity {
-    public AssociationClass(Object object) throws Exception {
-        super();
-        JSONObject entity = (JSONObject) object;
-        this.clazz = (String) entity.get("association-class");
-        @SuppressWarnings("unchecked")
-        List<JSONObject> attributes = (JSONArray) entity.get("attributes");
-        if (Objects.nonNull(attributes)) {
-            for (JSONObject attribute : attributes) {
-                this.attributes.add(new Attribute(attribute));
-            }
-        }
+    public AssociationClass(String name, Set<Attribute> attributes, End left, End right) {
+        super(name, left, right);
+        this.attributes = attributes;
+    }
 
-        this.ends = new HashSet<End>();
+    @Override
+    public String toString() {
+        String attrString =
+                attributes.stream().map(Attribute::toString).collect(Collectors.joining(", "));
+        return this.getName() + " (" + attrString + ") " + this.getLeft() + this.getRight();
+    }
 
-        @SuppressWarnings("unchecked")
-        List<JSONObject> ends = (JSONArray) entity.get("ends");
-        if (Objects.nonNull(ends)) {
-            for (JSONObject obj : ends) {
-                End end = new End();
-
-                end.setCurrentClass(this.getName());
-                end.setMult(Multiplicity.MANY);
-                end.setName((String) obj.get("name"));
-                end.setTargetClass((String) obj.get("target"));
-                end.setOpp(null);
-                this.ends.add(end);
-            }
-        }
+    public Set<Attribute> getAttributes() {
+        return this.attributes;
     }
 }
