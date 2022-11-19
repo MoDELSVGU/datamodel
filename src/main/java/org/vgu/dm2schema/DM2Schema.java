@@ -87,7 +87,7 @@ public class DM2Schema {
 
         List<Statement> associationClassStatements = generateAssociationClassStatement(context);
 
-        // associationClassStatement.forEach(
+        // associationClassStatements.forEach(
         //         test -> {
         //             System.out.println(test);
         //         });
@@ -109,8 +109,9 @@ public class DM2Schema {
     }
 
     public static void main(String[] args) throws Exception {
-        File dataModelFile = new File("src/main/resources/genSQL/uni_pof_dm.json");
-        File SQLschemaFile = new File("src/main/resources/genSQL/pof.sql");
+
+        File dataModelFile = new File("/home/pj/coding/SQLSI/sncs2021_evaluation/vgu_dm.json");
+        File SQLschemaFile = new File("~/test.sql");
         String databaseName = "unipof";
 
         DataModel dataModel =
@@ -125,10 +126,10 @@ public class DM2Schema {
 
         List<Statement> entityStatements = generateEntityStatements(dataModel);
 
-        entityStatements.forEach(
-                test -> {
-                    System.out.println(test.toString());
-                });
+        // entityStatements.forEach(
+        //         test -> {
+        //             System.out.println(test.toString());
+        //         });
 
         schema.addAll(
                 entityStatements.stream().map(Statement::toString).collect(Collectors.toList()));
