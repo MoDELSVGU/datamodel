@@ -1,5 +1,6 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
+Copyright 2023 ETH Zurich
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,11 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-@author: ngpbh
+@author: hoangnguyen (hoang.nguyen@inf.ethz.ch)
 ***************************************************************************/
 
 
-package org.vgu.dm2schema.dm;
+package modeling.data.entities;
 
 public enum AssociationType {
     MANY_TO_MANY, MANY_TO_ONE, ONE_TO_ONE;
