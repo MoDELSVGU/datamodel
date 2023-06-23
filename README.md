@@ -5,7 +5,7 @@ A parser component that parses JSON representation to Java object hierarchy for 
 <dependency>
   <groupId>io.github.modelsvgu</groupId>
   <artifactId>datamodelj</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
