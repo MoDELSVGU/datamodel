@@ -1,6 +1,14 @@
 # datamodel
 A parser component that parses JSON representation to Java object hierarchy for our datamodel.
 
+```
+<dependency>
+  <groupId>io.github.modelsvgu</groupId>
+  <artifactId>datamodelj</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
 Current support includes:
 - Classes.
 - Attributes with primitive types such as Integer and String.
