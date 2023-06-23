@@ -1,5 +1,6 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
+Copyright 2023 ETH Zurich
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,29 +14,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-@author: ngpbh
+@author: hoangnguyen (hoang.nguyen@inf.ethz.ch)
 ***************************************************************************/
 
-package org.vgu.dm2schema.dm;
+package modeling.data.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-@SuppressWarnings("serial")
-public class Invariants extends ArrayList<Invariant> {
+public class Invariant {
+    private String label;
+    private String ocl;
 
-    public Invariants(Object object) throws Exception {
+    public Invariant(Object object) throws Exception {
         if (!(object instanceof JSONObject))
             throw new Exception();
-        JSONObject invariantGroup = (JSONObject) object;
-        @SuppressWarnings("unchecked")
-        List<JSONObject> invariants = (JSONArray) invariantGroup.get("invariants");
-        for (JSONObject invariant : invariants) {
-            this.add(new Invariant(invariant));
-        }
+        JSONObject invariant = (JSONObject) object;
+        this.label = (String) invariant.get("label");
+        this.ocl = (String) invariant.get("ocl");
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public String getOcl() {
+        return ocl;
+    }
 }

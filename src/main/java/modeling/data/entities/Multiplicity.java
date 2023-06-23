@@ -1,5 +1,6 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
+Copyright 2023 ETH Zurich
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,27 +14,33 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-@author: ngpbh
+@author: hoangnguyen (hoang.nguyen@inf.ethz.ch)
 ***************************************************************************/
 
-package org.vgu.dm2schema.sql;
+package modeling.data.entities;
 
-public class CreateInvariantFunction extends CreateFunction {
-    private String sqlInvariant;
+public enum Multiplicity {
+    ONE("1"), MANY("*");
+
+    private String representation;
+
+    Multiplicity(String representation) {
+        this.representation = representation;
+    }
+
+    public String getRepresentation() {
+        return representation;
+    }
 
     @Override
     public String toString() {
-        return String.format(
-            SQLSchemaTemplate.CREATE_INVARIANT_FUNCTION, delimiter,
-            function.getName(), sqlInvariant);
+        return this.getRepresentation();
     }
 
-    public String getSqlInvariant() {
-        return sqlInvariant;
+    public static Multiplicity getEnum(String value) {
+        for (Multiplicity v : values())
+            if (v.getRepresentation().equalsIgnoreCase(value))
+                return v;
+        throw new IllegalArgumentException();
     }
-
-    public void setSqlInvariant(String sqlInvariant) {
-        this.sqlInvariant = sqlInvariant;
-    }
-
 }

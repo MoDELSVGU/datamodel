@@ -1,5 +1,6 @@
 /**************************************************************************
 Copyright 2019 Vietnamese-German-University
+Copyright 2023 ETH Zurich
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,29 +14,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-@author: ngpbh
+@author: hoangnguyen (hoang.nguyen@inf.ethz.ch)
 ***************************************************************************/
 
-package org.vgu.dm2schema.sql;
+package modeling.data.mappings;
 
-public class CreateInvariantTrigger extends CreateTrigger {
-    private Function function;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
-    public Function getFunction() {
-        return function;
-    }
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-    public void setFunction(Function function) {
-        this.function = function;
-    }
+import modeling.data.entities.DataModel;
 
-    @Override
-    public String toString() {
-        return String.format(SQLSchemaTemplate.CREATE_INVARIANT_TRIGGER,
-            delimiter,
-            trigger.getTriggerName(), trigger.getTriggerTime(),
-            trigger.getTriggerEvent(), trigger.getTable().getName(),
-            function.call());
-    }
+public class DMParser {
 
+	public static DataModel parse(String dataModelPath)
+			throws FileNotFoundException, IOException, ParseException, Exception {
+		return new DataModel(new JSONParser().parse(new FileReader(dataModelPath)));
+	}
+	
 }
