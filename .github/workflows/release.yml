@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - Clean
-  pull_request:
-    branches: [ Clean ]
 jobs:
   publish:
     runs-on: ubuntu-latest

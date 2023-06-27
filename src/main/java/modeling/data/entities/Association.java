@@ -28,8 +28,8 @@ public class Association {
 
 	public Association(String name, End left, End right) {
 		this.name = name;
-		this.leftEnd = this.getLeftEnd();
-		this.rightEnd = this.getRightEnd();
+		this.leftEnd = left;
+		this.rightEnd = right;
 	}
 
 	public End getLeftEnd() {
