@@ -31,6 +31,9 @@ public class Entity {
 	private String clazz;
 	private Set<Attribute> attributes;
 	private Set<End> ends;
+	// This part is for association class
+	private boolean isAssociation = false;
+	private Set<End_AssociationClass> end_acs;
 
 	public Entity() {
 		attributes = new HashSet<Attribute>();
@@ -41,23 +44,41 @@ public class Entity {
 		if (!(object instanceof JSONObject))
 			throw new Exception();
 		attributes = new HashSet<Attribute>();
+		end_acs = new HashSet<End_AssociationClass>();
+		this.ends = new HashSet<End>();
+		
 		JSONObject entity = (JSONObject) object;
-		this.clazz = (String) entity.get("class");
 		@SuppressWarnings("unchecked")
 		List<JSONObject> attributes = (JSONArray) entity.get("attributes");
+		@SuppressWarnings("unchecked")
+		List<JSONObject> ends = (JSONArray) entity.get("ends");
+		
+		this.clazz = (String) entity.get("class");
+		
 		if (Objects.nonNull(attributes)) {
 			for (JSONObject attribute : attributes) {
 				this.attributes.add(new Attribute(attribute));
 			}
 		}
-		this.ends = new HashSet<End>();
-		@SuppressWarnings("unchecked")
-		List<JSONObject> ends = (JSONArray) entity.get("ends");
+		
+		if (entity.containsKey("isAssociation") && (Boolean) entity.get("isAssociation")) {
+			this.setAssociation(true);
+			for (JSONObject obj : ends) {
+				if (obj.containsKey("opptargets")) {
+					End_AssociationClass end = new End_AssociationClass(obj);
+					end.setCurrentClass(this.clazz);
+					this.end_acs.add(end);
+				}
+			}
+		}
+		
 		if (Objects.nonNull(ends)) {
 			for (JSONObject obj : ends) {
-				End end = new End(obj);
-				end.setCurrentClass(this.clazz);
-				this.ends.add(end);
+				if (!obj.containsKey("opptargets")) {
+					End end = new End(obj);
+					end.setCurrentClass(this.clazz);
+					this.ends.add(end);
+				}
 			}
 		}
 	}
@@ -93,5 +114,21 @@ public class Entity {
 
 	public void setEnds(Set<End> ends) {
 		this.ends = ends;
+	}
+
+	public boolean isAssociation() {
+		return isAssociation;
+	}
+
+	public void setAssociation(boolean isAssociation) {
+		this.isAssociation = isAssociation;
+	}
+
+	public Set<End_AssociationClass> getEnd_acs() {
+		return end_acs;
+	}
+
+	public void setEnd_acs(Set<End_AssociationClass> end_acs) {
+		this.end_acs = end_acs;
 	}
 }
