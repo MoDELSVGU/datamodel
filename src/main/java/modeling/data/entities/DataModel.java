@@ -50,7 +50,6 @@ public class DataModel {
 				JSONObject jsonObject = (JSONObject) object;
 				if (jsonObject.containsKey("version") && Config.VERSION.equals((String) jsonObject.get("version"))) {
 					dataModel = DmUtils.transform((JSONArray) jsonObject.get("dataModel"));
-					System.out.println(dataModel);
 				}
 			} else {
 				throw new Exception();
