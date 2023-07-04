@@ -1,0 +1,64 @@
+{
+	"version": "1.0.4-ASC",
+	"dataModel": [
+		{
+			"class": "Election",
+			"attributes": [
+				{
+					"name": "description",
+					"type": "String"
+				}
+			]
+		},
+		{
+			"class": "Voter",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "String"
+				},
+				{
+					"name": "ssn",
+					"type": "String"
+				}
+			]
+		},
+		{
+			"association": "participants_in_election",
+			"ends": [
+				{
+					"name": "voters",
+					"target": "Voter",
+					"mult": "*"
+				},
+				{
+					"name": "elections",
+					"target": "Election",
+					"mult": "*"
+				}
+			]
+		},
+		{
+			"association-class": "Vote",
+			"association": "participants_in_election",
+			"attributes": [
+				{
+					"name": "value",
+					"type": "Integer"
+				}
+			],
+			"implicit-associations": [
+				{
+					"name": "votes_in_election",
+					"opp-class": "Election",
+					"opp-class-end": "votes"
+				},
+				{
+					"name": "votes_by_voters",
+					"opp-class": "Voter",
+					"opp-class-end": "votes"
+				}
+			]
+		}
+	]
+}

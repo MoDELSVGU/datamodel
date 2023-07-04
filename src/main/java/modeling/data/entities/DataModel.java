@@ -26,8 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+
+import modeling.data.config.Config;
+import modeling.data.utils.DmUtils;
 
 public class DataModel {
 	private Map<String, Entity> entities;
@@ -38,14 +42,24 @@ public class DataModel {
 	};
 
 	public DataModel(Object object) throws Exception {
-
-		if (!(object instanceof JSONArray))
-			throw new Exception();
-
+		
+		List<JSONObject> dataModel = null;
+		
+		if (!(object instanceof JSONArray)) {
+			if (object instanceof JSONObject) {
+				JSONObject jsonObject = (JSONObject) object;
+				if (jsonObject.containsKey("version") && Config.VERSION.equals((String) jsonObject.get("version"))) {
+					dataModel = DmUtils.transform((JSONArray) jsonObject.get("dataModel"));
+					System.out.println(dataModel);
+				}
+			} else {
+				throw new Exception();
+			}
+		} else {
+			dataModel = (JSONArray) object;
+		}
+			
 		entities = new HashMap<String, Entity>();
-
-		@SuppressWarnings("unchecked")
-		List<JSONObject> dataModel = (JSONArray) object;
 
 		for (JSONObject element : dataModel) {
 			if (element.containsKey("class")) {

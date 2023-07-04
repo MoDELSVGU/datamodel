@@ -20,9 +20,15 @@ limitations under the License.
 
 package modeling.data.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import modeling.data.config.Config;
 import modeling.data.entities.Association;
 import modeling.data.entities.AssociationType;
 import modeling.data.entities.Attribute;
@@ -160,6 +166,134 @@ public class DmUtils {
 		}
 
 		return null;
+	}
+
+	public static List<JSONObject> transform(List<JSONObject> jsonArray) {
+		JSONArray target = new JSONArray();
+		JSONArray clazzes = new JSONArray();
+		JSONArray ascs = new JSONArray();
+		if ("1.0.4-ASC".equals(Config.VERSION)) {
+			// Step 1: Transform the classes
+			for (JSONObject obj : jsonArray) {
+				if (obj.containsKey("class")) {
+					JSONObject clazz = new JSONObject();
+					clazz.put("class", obj.get("class"));
+					clazz.put("attributes", obj.get("attributes"));
+					clazzes.add(clazz);
+				}
+			}
+			// Step 2: Transform the association-classes
+			List<String> explicitAssociationName = new ArrayList<String>();
+			for (JSONObject obj : jsonArray) {
+				if (obj.containsKey("association-class")) {
+					JSONObject asc = new JSONObject();
+					asc.put("class", obj.get("association-class"));
+					asc.put("isAssociation", true);
+					asc.put("attributes", obj.get("attributes"));
+					String associationName = (String) obj.get("association");
+					explicitAssociationName.add(associationName);
+
+					List<JSONObject> asc_ends = (JSONArray) obj.get("implicit-associations");
+					JSONArray asc_target_ends = new JSONArray();
+					asc.put("ends", asc_target_ends);
+
+					List<String> opps = new ArrayList<String>();
+					List<String> oppTargets = new ArrayList<String>();
+					List<String> mults = new ArrayList<String>();
+					for (JSONObject assoc : jsonArray) {
+						if (assoc.containsKey("association") && !assoc.containsKey("association-class")
+								&& ((String) assoc.get("association")).equals(associationName)) {
+							List<JSONObject> ends = (JSONArray) assoc.get("ends");
+							for (JSONObject end : ends) {
+								opps.add((String) end.get("name"));
+								oppTargets.add((String) end.get("target"));
+								mults.add((String) end.get("mult"));
+							}
+						}
+					}
+					for (JSONObject asc_end : asc_ends) {
+						String oppClass = (String) asc_end.get("opp-class");
+						for (int i = 0; i < opps.size(); i++) {
+							String oppTarget = oppTargets.get(i);
+							if (oppTarget.equals(oppClass)) {
+								// Here I ignored the opp-class-end since it is not needed at the moment!
+								JSONObject asc_target_end = new JSONObject();
+								asc_target_end.put("association", asc_end.get("name"));
+								asc_target_end.put("name", opps.get(i));
+								asc_target_end.put("target", oppTarget);
+								JSONArray remainingOpps = new JSONArray();
+								for (String s : opps) {
+									if (!s.equals(opps.get(i))) {
+										remainingOpps.add(s);
+									}
+								}
+								asc_target_end.put("opps", remainingOpps);
+								JSONArray remainingOppTargets = new JSONArray();
+								for (String s : oppTargets) {
+									if (!s.equals(oppTarget)) {
+										remainingOppTargets.add(s);
+									}
+								}
+								asc_target_end.put("opptargets", remainingOppTargets);
+								asc_target_end.put("mult", mults.get(i));
+								asc_target_ends.add(asc_target_end);
+								break;
+							}
+						}
+					}
+					ascs.add(asc);
+				}
+			}
+			// Step 3: Transform association
+			for (JSONObject obj : jsonArray) {
+				if (obj.containsKey("association")) {
+					String name = (String) obj.get("association");
+					if (!explicitAssociationName.contains(name)) {
+						// In this case we know that this is binary association
+						List<JSONObject> ends = (JSONArray) obj.get("ends");
+						JSONObject left = ends.get(0);
+						JSONObject right = ends.get(1);
+
+						JSONObject leftEnd = new JSONObject();
+						clazzes.forEach(c -> {
+							JSONObject clazz = (JSONObject) c;
+							if (clazz.get("class").equals(left.get("target"))) {
+								leftEnd.put("association", obj.get("association"));
+								leftEnd.put("name", right.get("name"));
+								leftEnd.put("target", right.get("target"));
+								leftEnd.put("opp", left.get("name"));
+								leftEnd.put("mult", right.get("mult"));
+								JSONArray clazz_ends = (JSONArray) clazz.get("ends");
+								if (clazz_ends == null) {
+									clazz_ends = new JSONArray();
+								}
+								clazz_ends.add(leftEnd);
+							}
+						});
+
+						JSONObject rightEnd = new JSONObject();
+						clazzes.forEach(c -> {
+							JSONObject clazz = (JSONObject) c;
+							if (clazz.get("class").equals(left.get("target"))) {
+								rightEnd.put("association", obj.get("association"));
+								rightEnd.put("name", left.get("name"));
+								rightEnd.put("target", left.get("target"));
+								rightEnd.put("opp", right.get("name"));
+								rightEnd.put("mult", left.get("mult"));
+								JSONArray clazz_ends = (JSONArray) clazz.get("ends");
+								if (clazz_ends == null) {
+									clazz_ends = new JSONArray();
+								}
+								clazz_ends.add(rightEnd);
+							}
+						});
+					}
+				}
+			}
+		}
+		target.addAll(clazzes);
+		target.addAll(ascs);
+		return target;
 	}
 
 }
