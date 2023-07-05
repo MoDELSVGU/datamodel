@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.modelsvgu</groupId>
 	<artifactId>datamodelj</artifactId>
-	<version>1.0.5-ASC</version>
+	<version>1.0.6-ASC</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>A parser from JSON representation to Java object of Datamodel.</description>
 	<url>https://github.com/MoDELSVGU/datamodel</url>
