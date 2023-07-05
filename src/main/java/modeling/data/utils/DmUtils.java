@@ -172,7 +172,7 @@ public class DmUtils {
 		JSONArray target = new JSONArray();
 		JSONArray clazzes = new JSONArray();
 		JSONArray ascs = new JSONArray();
-		if ("1.0.4-ASC".equals(Config.VERSION)) {
+		if ("1.0.5-ASC".equals(Config.VERSION)) {
 			// Step 1: Transform the classes
 			for (JSONObject obj : jsonArray) {
 				if (obj.containsKey("class")) {
