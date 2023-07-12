@@ -30,7 +30,6 @@ import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import modeling.data.config.Config;
 import modeling.data.utils.DmUtils;
 
 public class DataModel {
@@ -42,14 +41,15 @@ public class DataModel {
 	};
 
 	public DataModel(Object object) throws Exception {
-		
+
 		List<JSONObject> dataModel = null;
-		
+
 		if (!(object instanceof JSONArray)) {
 			if (object instanceof JSONObject) {
 				JSONObject jsonObject = (JSONObject) object;
-				if (jsonObject.containsKey("version") && Config.VERSION.equals((String) jsonObject.get("version"))) {
-					dataModel = DmUtils.transform((JSONArray) jsonObject.get("dataModel"));
+				if (jsonObject.containsKey("version")) {
+					String version = (String) jsonObject.get("version");
+					dataModel = DmUtils.transform((JSONArray) jsonObject.get("dataModel"), version);
 				}
 			} else {
 				throw new Exception();
@@ -57,7 +57,7 @@ public class DataModel {
 		} else {
 			dataModel = (JSONArray) object;
 		}
-			
+
 		entities = new HashMap<String, Entity>();
 
 		for (JSONObject element : dataModel) {
