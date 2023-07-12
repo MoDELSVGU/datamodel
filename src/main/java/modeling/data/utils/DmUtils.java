@@ -28,7 +28,6 @@ import java.util.Set;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import modeling.data.config.Config;
 import modeling.data.entities.Association;
 import modeling.data.entities.AssociationType;
 import modeling.data.entities.Attribute;
@@ -168,11 +167,11 @@ public class DmUtils {
 		return null;
 	}
 
-	public static List<JSONObject> transform(List<JSONObject> jsonArray) {
+	public static List<JSONObject> transform(List<JSONObject> jsonArray, String version) {
 		JSONArray target = new JSONArray();
 		JSONArray clazzes = new JSONArray();
 		JSONArray ascs = new JSONArray();
-		if ("1.0.6-ASC".equals(Config.VERSION) || "1.0.7-ASC".equals(Config.VERSION)) {
+		if ("1.0.6-ASC".equals(version) || "1.0.7-ASC".equals(version) || "1.0.8-ASC".equals(version)) {
 			// Step 1: Transform the classes
 			for (JSONObject obj : jsonArray) {
 				if (obj.containsKey("class")) {
