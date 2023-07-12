@@ -172,7 +172,7 @@ public class DmUtils {
 		JSONArray target = new JSONArray();
 		JSONArray clazzes = new JSONArray();
 		JSONArray ascs = new JSONArray();
-		if ("1.0.6-ASC".equals(Config.VERSION)) {
+		if ("1.0.6-ASC".equals(Config.VERSION) || "1.0.7-ASC".equals(Config.VERSION)) {
 			// Step 1: Transform the classes
 			for (JSONObject obj : jsonArray) {
 				if (obj.containsKey("class")) {
@@ -268,13 +268,14 @@ public class DmUtils {
 									clazz_ends = new JSONArray();
 								}
 								clazz_ends.add(leftEnd);
+								clazz.put("ends", clazz_ends);
 							}
 						});
 
 						JSONObject rightEnd = new JSONObject();
 						clazzes.forEach(c -> {
 							JSONObject clazz = (JSONObject) c;
-							if (clazz.get("class").equals(left.get("target"))) {
+							if (clazz.get("class").equals(right.get("target"))) {
 								rightEnd.put("association", obj.get("association"));
 								rightEnd.put("name", left.get("name"));
 								rightEnd.put("target", left.get("target"));
@@ -285,6 +286,7 @@ public class DmUtils {
 									clazz_ends = new JSONArray();
 								}
 								clazz_ends.add(rightEnd);
+								clazz.put("ends", clazz_ends);
 							}
 						});
 					}
